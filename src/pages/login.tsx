@@ -3,10 +3,11 @@ import { useConnect } from "@particle-network/auth-core-modal";
 import { AvalancheTestnet } from "@particle-network/chains";
 
 import { FFButton } from "@/components/ui/FFButton";
-
+import { useFriendFi } from "@/hooks/useFriendFi";
 
 export default function Login() {
   const { connect } = useConnect();
+  const { registered, register, fetching } = useFriendFi();
   return (
     <div className="h-full w-full flex flex-col pt-[100px] pb-[80px]">
       <div className="flex flex-col items-center">
@@ -20,11 +21,15 @@ export default function Login() {
         <FFButton
           size="lg"
           className="w-[350px] mx-auto"
-          onClick={() =>
-            connect({
+          onClick={async () => {
+            await connect({
               chain: AvalancheTestnet,
-            })
-          }
+            });
+            await fetching();
+            if (!registered) {
+              await register();
+            }
+          }}
         >
           Sign In
         </FFButton>

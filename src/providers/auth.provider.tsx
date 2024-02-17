@@ -15,7 +15,7 @@ export default function AuthProvider({
       router.replace("/login");
     }
     if (pathname === "/login" && userInfo) {
-      router.replace("/");
+      router.replace("/register");
     }
   }, [userInfo, pathname, router]);
 

@@ -17,7 +17,8 @@ export default function MainLayout({
     >
       <ParticleProvider>
         <AuthProvider>
-          {children} {path !== "/login" && <Bottombar />}
+          {children}
+          {path !== "/login" && path !== "/register" && <Bottombar />}
         </AuthProvider>
       </ParticleProvider>
     </div>
