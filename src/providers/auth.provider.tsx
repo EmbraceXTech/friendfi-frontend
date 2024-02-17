@@ -11,9 +11,9 @@ export default function AuthProvider({
   const account = useAccount();
 
   useEffect(() => {
-    if (pathname !== "/login" && !account) {
-      router.replace("/login");
-    }
+    // if (pathname !== "/login" && !account) {
+    //   router.replace("/login");
+    // }
     if (pathname === "/login" && account !== undefined) {
       router.replace("/");
     }
