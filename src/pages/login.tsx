@@ -1,9 +1,12 @@
-import { FFButton } from "@/components/ui/FFButton";
-import { ConnectButton } from "@particle-network/connectkit";
 import React from "react";
-import "@particle-network/connectkit/dist/index.css";
+import { useConnect } from "@particle-network/auth-core-modal";
+import { AvalancheTestnet } from "@particle-network/chains";
+
+import { FFButton } from "@/components/ui/FFButton";
+
 
 export default function Login() {
+  const { connect } = useConnect();
   return (
     <div className="h-full w-full flex flex-col pt-[100px] pb-[80px]">
       <div className="flex flex-col items-center">
@@ -14,19 +17,17 @@ export default function Login() {
         </p>
       </div>
       <div className="mt-[270px]">
-        <ConnectButton.Custom>
-          {({ openConnectModal }) => {
-            return (
-              <FFButton
-                size="lg"
-                className="w-[350px] mx-auto"
-                onClick={openConnectModal}
-              >
-                Sign In
-              </FFButton>
-            );
-          }}
-        </ConnectButton.Custom>
+        <FFButton
+          size="lg"
+          className="w-[350px] mx-auto"
+          onClick={() =>
+            connect({
+              chain: AvalancheTestnet,
+            })
+          }
+        >
+          Sign In
+        </FFButton>
         <p className="text-center text-xs px-[80px] mt-16 text-gray-400">
           By continuing, you agree to FriendFi’s Terms of Service and confirm
           that you are at least 13 years old.
