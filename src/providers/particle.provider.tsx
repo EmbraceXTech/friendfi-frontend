@@ -21,13 +21,12 @@ export default function ParticleProvider({
         },
         promptSettingConfig: {
           promptPaymentPasswordSettingWhenSign: 1,
-
           promptMasterPasswordSettingWhenLogin: 1,
         },
-        connectors: evmWallets({
-          projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "",
-          showQrModal: false,
-        }),
+        // connectors: evmWallets({
+        //   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "",
+        //   showQrModal: false,
+        // }),
       }}
       theme={"light"}
       language={"en"}
