@@ -34,17 +34,12 @@ export interface FriendKeyManagerInterface extends Interface {
       | "RANDOM_WINDOW"
       | "USER_DIVIDEN"
       | "acceptOwnership"
-      | "addressPrice"
-      | "addressUUIDs"
-      | "addresses"
       | "batchMint"
-      | "bytesToUint256"
       | "claimFee"
       | "cooldownDuration"
       | "feeChangeRate"
       | "getMintFee"
-      | "handleOracleFulfillment"
-      | "isRegistered"
+      | "getPrice"
       | "keys"
       | "lastMintTimestamp"
       | "lastRequestId"
@@ -55,32 +50,19 @@ export interface FriendKeyManagerInterface extends Interface {
       | "mint"
       | "mintDigest"
       | "mintRequests"
-      | "numUsers"
       | "owner"
-      | "pendingUUID"
-      | "prices"
       | "rawFulfillRandomWords"
-      | "register"
       | "requestIds"
-      | "s_lastError"
-      | "s_lastRequestId"
-      | "s_lastResponse"
       | "transferOwnership"
-      | "uint256ToAddress"
-      | "uuidAddresses"
-      | "uuidPrice"
-      | "uuids"
+      | "userManager"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
       | "OwnershipTransferRequested"
       | "OwnershipTransferred"
-      | "RequestFulfilled(bytes32)"
-      | "RequestFulfilled(uint256,uint256[])"
-      | "RequestSent(bytes32)"
-      | "RequestSent(uint256,uint32)"
-      | "Response"
+      | "RequestFulfilled"
+      | "RequestSent"
   ): EventFragment;
 
   encodeFunctionData(
@@ -113,24 +95,8 @@ export interface FriendKeyManagerInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "addressPrice",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "addressUUIDs",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "addresses",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "batchMint",
     values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "bytesToUint256",
-    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "claimFee",
@@ -149,12 +115,8 @@ export interface FriendKeyManagerInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "handleOracleFulfillment",
-    values: [BytesLike, BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isRegistered",
-    values: [string]
+    functionFragment: "getPrice",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "keys", values: [BigNumberish]): string;
   encodeFunctionData(
@@ -184,54 +146,23 @@ export interface FriendKeyManagerInterface extends Interface {
     functionFragment: "mintRequests",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "numUsers", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "pendingUUID",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "prices",
-    values: [BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "rawFulfillRandomWords",
     values: [BigNumberish, BigNumberish[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "register",
-    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "requestIds",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "s_lastError",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "s_lastRequestId",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "s_lastResponse",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "uint256ToAddress",
-    values: [BigNumberish]
+    functionFragment: "userManager",
+    values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "uuidAddresses",
-    values: [string]
-  ): string;
-  encodeFunctionData(functionFragment: "uuidPrice", values: [string]): string;
-  encodeFunctionData(functionFragment: "uuids", values: [BigNumberish]): string;
 
   decodeFunctionResult(
     functionFragment: "DIGEST_BATCH",
@@ -259,20 +190,7 @@ export interface FriendKeyManagerInterface extends Interface {
     functionFragment: "acceptOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "addressPrice",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "addressUUIDs",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "addresses", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "batchMint", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "bytesToUint256",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "claimFee", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cooldownDuration",
@@ -283,14 +201,7 @@ export interface FriendKeyManagerInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getMintFee", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "handleOracleFulfillment",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isRegistered",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "getPrice", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "keys", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "lastMintTimestamp",
@@ -313,45 +224,20 @@ export interface FriendKeyManagerInterface extends Interface {
     functionFragment: "mintRequests",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "numUsers", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingUUID",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "prices", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "rawFulfillRandomWords",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "register", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "requestIds", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "s_lastError",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "s_lastRequestId",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "s_lastResponse",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "uint256ToAddress",
+    functionFragment: "userManager",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "uuidAddresses",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "uuidPrice", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "uuids", data: BytesLike): Result;
 }
 
 export namespace OwnershipTransferRequestedEvent {
@@ -380,19 +266,7 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace RequestFulfilled_bytes32_Event {
-  export type InputTuple = [id: BytesLike];
-  export type OutputTuple = [id: string];
-  export interface OutputObject {
-    id: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace RequestFulfilled_uint256_uint256_array_Event {
+export namespace RequestFulfilledEvent {
   export type InputTuple = [
     requestId: BigNumberish,
     randomWords: BigNumberish[]
@@ -408,49 +282,12 @@ export namespace RequestFulfilled_uint256_uint256_array_Event {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace RequestSent_bytes32_Event {
-  export type InputTuple = [id: BytesLike];
-  export type OutputTuple = [id: string];
-  export interface OutputObject {
-    id: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace RequestSent_uint256_uint32_Event {
+export namespace RequestSentEvent {
   export type InputTuple = [requestId: BigNumberish, numWords: BigNumberish];
   export type OutputTuple = [requestId: bigint, numWords: bigint];
   export interface OutputObject {
     requestId: bigint;
     numWords: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace ResponseEvent {
-  export type InputTuple = [
-    requestId: BytesLike,
-    uuid: string,
-    response: BytesLike,
-    err: BytesLike
-  ];
-  export type OutputTuple = [
-    requestId: string,
-    uuid: string,
-    response: string,
-    err: string
-  ];
-  export interface OutputObject {
-    requestId: string;
-    uuid: string;
-    response: string;
-    err: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -517,19 +354,11 @@ export interface FriendKeyManager extends BaseContract {
 
   acceptOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
-  addressPrice: TypedContractMethod<[_addr: AddressLike], [bigint], "view">;
-
-  addressUUIDs: TypedContractMethod<[_addr: AddressLike], [string], "view">;
-
-  addresses: TypedContractMethod<[_index: BigNumberish], [string], "view">;
-
   batchMint: TypedContractMethod<
     [_to: AddressLike, _mintAmount: BigNumberish],
     [void],
     "payable"
   >;
-
-  bytesToUint256: TypedContractMethod<[_input: BytesLike], [bigint], "view">;
 
   claimFee: TypedContractMethod<[_value: BigNumberish], [void], "nonpayable">;
 
@@ -539,13 +368,7 @@ export interface FriendKeyManager extends BaseContract {
 
   getMintFee: TypedContractMethod<[number: BigNumberish], [bigint], "view">;
 
-  handleOracleFulfillment: TypedContractMethod<
-    [requestId: BytesLike, response: BytesLike, err: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-
-  isRegistered: TypedContractMethod<[_uuid: string], [boolean], "view">;
+  getPrice: TypedContractMethod<[id: BigNumberish], [bigint], "view">;
 
   keys: TypedContractMethod<[arg0: BigNumberish], [string], "view">;
 
@@ -591,13 +414,7 @@ export interface FriendKeyManager extends BaseContract {
     "view"
   >;
 
-  numUsers: TypedContractMethod<[], [bigint], "view">;
-
   owner: TypedContractMethod<[], [string], "view">;
-
-  pendingUUID: TypedContractMethod<[arg0: BytesLike], [string], "view">;
-
-  prices: TypedContractMethod<[_index: BigNumberish], [bigint], "view">;
 
   rawFulfillRandomWords: TypedContractMethod<
     [requestId: BigNumberish, randomWords: BigNumberish[]],
@@ -605,19 +422,7 @@ export interface FriendKeyManager extends BaseContract {
     "nonpayable"
   >;
 
-  register: TypedContractMethod<
-    [_uuid: string, _token: string],
-    [void],
-    "nonpayable"
-  >;
-
   requestIds: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
-
-  s_lastError: TypedContractMethod<[], [string], "view">;
-
-  s_lastRequestId: TypedContractMethod<[], [string], "view">;
-
-  s_lastResponse: TypedContractMethod<[], [string], "view">;
 
   transferOwnership: TypedContractMethod<
     [to: AddressLike],
@@ -625,17 +430,7 @@ export interface FriendKeyManager extends BaseContract {
     "nonpayable"
   >;
 
-  uint256ToAddress: TypedContractMethod<
-    [_input: BigNumberish],
-    [string],
-    "view"
-  >;
-
-  uuidAddresses: TypedContractMethod<[_uuid: string], [string], "view">;
-
-  uuidPrice: TypedContractMethod<[_uuid: string], [bigint], "view">;
-
-  uuids: TypedContractMethod<[_index: BigNumberish], [string], "view">;
+  userManager: TypedContractMethod<[], [string], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
@@ -666,24 +461,12 @@ export interface FriendKeyManager extends BaseContract {
     nameOrSignature: "acceptOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "addressPrice"
-  ): TypedContractMethod<[_addr: AddressLike], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "addressUUIDs"
-  ): TypedContractMethod<[_addr: AddressLike], [string], "view">;
-  getFunction(
-    nameOrSignature: "addresses"
-  ): TypedContractMethod<[_index: BigNumberish], [string], "view">;
-  getFunction(
     nameOrSignature: "batchMint"
   ): TypedContractMethod<
     [_to: AddressLike, _mintAmount: BigNumberish],
     [void],
     "payable"
   >;
-  getFunction(
-    nameOrSignature: "bytesToUint256"
-  ): TypedContractMethod<[_input: BytesLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "claimFee"
   ): TypedContractMethod<[_value: BigNumberish], [void], "nonpayable">;
@@ -697,15 +480,8 @@ export interface FriendKeyManager extends BaseContract {
     nameOrSignature: "getMintFee"
   ): TypedContractMethod<[number: BigNumberish], [bigint], "view">;
   getFunction(
-    nameOrSignature: "handleOracleFulfillment"
-  ): TypedContractMethod<
-    [requestId: BytesLike, response: BytesLike, err: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "isRegistered"
-  ): TypedContractMethod<[_uuid: string], [boolean], "view">;
+    nameOrSignature: "getPrice"
+  ): TypedContractMethod<[id: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "keys"
   ): TypedContractMethod<[arg0: BigNumberish], [string], "view">;
@@ -761,17 +537,8 @@ export interface FriendKeyManager extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "numUsers"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "pendingUUID"
-  ): TypedContractMethod<[arg0: BytesLike], [string], "view">;
-  getFunction(
-    nameOrSignature: "prices"
-  ): TypedContractMethod<[_index: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "rawFulfillRandomWords"
   ): TypedContractMethod<
@@ -780,35 +547,14 @@ export interface FriendKeyManager extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "register"
-  ): TypedContractMethod<[_uuid: string, _token: string], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "requestIds"
   ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "s_lastError"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "s_lastRequestId"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "s_lastResponse"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[to: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "uint256ToAddress"
-  ): TypedContractMethod<[_input: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "uuidAddresses"
-  ): TypedContractMethod<[_uuid: string], [string], "view">;
-  getFunction(
-    nameOrSignature: "uuidPrice"
-  ): TypedContractMethod<[_uuid: string], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "uuids"
-  ): TypedContractMethod<[_index: BigNumberish], [string], "view">;
+    nameOrSignature: "userManager"
+  ): TypedContractMethod<[], [string], "view">;
 
   getEvent(
     key: "OwnershipTransferRequested"
@@ -825,39 +571,18 @@ export interface FriendKeyManager extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
-    key: "RequestFulfilled(bytes32)"
+    key: "RequestFulfilled"
   ): TypedContractEvent<
-    RequestFulfilled_bytes32_Event.InputTuple,
-    RequestFulfilled_bytes32_Event.OutputTuple,
-    RequestFulfilled_bytes32_Event.OutputObject
+    RequestFulfilledEvent.InputTuple,
+    RequestFulfilledEvent.OutputTuple,
+    RequestFulfilledEvent.OutputObject
   >;
   getEvent(
-    key: "RequestFulfilled(uint256,uint256[])"
+    key: "RequestSent"
   ): TypedContractEvent<
-    RequestFulfilled_uint256_uint256_array_Event.InputTuple,
-    RequestFulfilled_uint256_uint256_array_Event.OutputTuple,
-    RequestFulfilled_uint256_uint256_array_Event.OutputObject
-  >;
-  getEvent(
-    key: "RequestSent(bytes32)"
-  ): TypedContractEvent<
-    RequestSent_bytes32_Event.InputTuple,
-    RequestSent_bytes32_Event.OutputTuple,
-    RequestSent_bytes32_Event.OutputObject
-  >;
-  getEvent(
-    key: "RequestSent(uint256,uint32)"
-  ): TypedContractEvent<
-    RequestSent_uint256_uint32_Event.InputTuple,
-    RequestSent_uint256_uint32_Event.OutputTuple,
-    RequestSent_uint256_uint32_Event.OutputObject
-  >;
-  getEvent(
-    key: "Response"
-  ): TypedContractEvent<
-    ResponseEvent.InputTuple,
-    ResponseEvent.OutputTuple,
-    ResponseEvent.OutputObject
+    RequestSentEvent.InputTuple,
+    RequestSentEvent.OutputTuple,
+    RequestSentEvent.OutputObject
   >;
 
   filters: {
@@ -883,36 +608,26 @@ export interface FriendKeyManager extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
-    "RequestFulfilled(bytes32)": TypedContractEvent<
-      RequestFulfilled_bytes32_Event.InputTuple,
-      RequestFulfilled_bytes32_Event.OutputTuple,
-      RequestFulfilled_bytes32_Event.OutputObject
-    >;
     "RequestFulfilled(uint256,uint256[])": TypedContractEvent<
-      RequestFulfilled_uint256_uint256_array_Event.InputTuple,
-      RequestFulfilled_uint256_uint256_array_Event.OutputTuple,
-      RequestFulfilled_uint256_uint256_array_Event.OutputObject
+      RequestFulfilledEvent.InputTuple,
+      RequestFulfilledEvent.OutputTuple,
+      RequestFulfilledEvent.OutputObject
     >;
-    "RequestSent(bytes32)": TypedContractEvent<
-      RequestSent_bytes32_Event.InputTuple,
-      RequestSent_bytes32_Event.OutputTuple,
-      RequestSent_bytes32_Event.OutputObject
-    >;
-    "RequestSent(uint256,uint32)": TypedContractEvent<
-      RequestSent_uint256_uint32_Event.InputTuple,
-      RequestSent_uint256_uint32_Event.OutputTuple,
-      RequestSent_uint256_uint32_Event.OutputObject
+    RequestFulfilled: TypedContractEvent<
+      RequestFulfilledEvent.InputTuple,
+      RequestFulfilledEvent.OutputTuple,
+      RequestFulfilledEvent.OutputObject
     >;
 
-    "Response(bytes32,string,bytes,bytes)": TypedContractEvent<
-      ResponseEvent.InputTuple,
-      ResponseEvent.OutputTuple,
-      ResponseEvent.OutputObject
+    "RequestSent(uint256,uint32)": TypedContractEvent<
+      RequestSentEvent.InputTuple,
+      RequestSentEvent.OutputTuple,
+      RequestSentEvent.OutputObject
     >;
-    Response: TypedContractEvent<
-      ResponseEvent.InputTuple,
-      ResponseEvent.OutputTuple,
-      ResponseEvent.OutputObject
+    RequestSent: TypedContractEvent<
+      RequestSentEvent.InputTuple,
+      RequestSentEvent.OutputTuple,
+      RequestSentEvent.OutputObject
     >;
   };
 }

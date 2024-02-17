@@ -16,7 +16,7 @@ export default function Test() {
     const { disconnect } = useConnect();
     const { userInfo } = useAuthCore();
     const { address, chainInfo } = useEthereum();
-    const { registered, nftId, nftPrice, numUsers, register, batchMint, addMintListener, removeMintListener } = useFriendFi();
+    const { registered, nftId, numUsers, register, batchMint, addMintListener, removeMintListener } = useFriendFi();
     const balance = useBalance();
 
     const [mintAmount, setMintAmount] = useState("1");
@@ -24,6 +24,7 @@ export default function Test() {
 
     const name = userInfo?.thirdparty_user_info?.user_info ? userInfo.thirdparty_user_info?.user_info?.name : "";
     const uuid = userInfo ? userInfo.uuid : "";
+    const token = userInfo ? userInfo.token : "";
 
     const getXProfile = (name: string) => {
         return `https://x.com/${name}`;
@@ -68,6 +69,7 @@ export default function Test() {
             <div>You're logged in as {name}</div>
             <div>Your wallet address is {address}</div>
             <div>Your UUID is {uuid}</div>
+            <div>Your token is {token}</div>
             <div>You have {balance.value} ETH</div>
             <a href={getXProfile(name)} target="_blank" className="text-blue-400">Link to profile</a>
 
@@ -90,7 +92,6 @@ export default function Test() {
                     <div>
                         <div>You have registered</div>
                         <div>NFT ID: {nftId}</div>
-                        <div>NFT Price: {nftPrice} ETH</div>
                     </div>
                 )
             }

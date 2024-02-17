@@ -6,6 +6,7 @@ import { JsonRpcProvider, formatEther } from "ethers";
 import { friendKeyManagerContract } from "@/contracts/friendKeyManagerContract";
 import { MulticallWrapper } from "ethers-multicall-provider";
 import { friendKeyContract } from "@/contracts/friendKeyContract";
+import { userManagerContract } from "@/contracts/userManagerContract";
 
 type MintListener = (level: number, operator: string, from: string, to: string, ids: bigint[], values: bigint[], txHash: string) => void;
 
@@ -15,7 +16,6 @@ export function useFriendFi() {
 
     const [registered, setRegistered] = useState(false);
     const [nftId, setNFTId] = useState(0);
-    const [nftPrice, setNftPrice] = useState(0);
     const [numUsers, setNumUsers] = useState(0);
 
     const [mintListeners, setMintListeners] = useState<Record<number, MintListener>>({});
@@ -32,18 +32,16 @@ export function useFriendFi() {
             if (uuid && chainId && provider && address) {
                 try {
                     const multiCallprovider = MulticallWrapper.wrap(etherProvider);
-                    const contract = friendKeyManagerContract.getContract(chainId, multiCallprovider);
+                    const contract = userManagerContract.getContract(chainId, multiCallprovider);
 
-                    // TODO: Fetch nft id
-                    const [isRegisted, price, numUsers] = await Promise.all([
+                    const [isRegisted, nftId, numUsers] = await Promise.all([
                         contract.isRegistered(uuid),
-                        contract.addressPrice(address),
+                        contract.addressId(address),
                         contract.numUsers()
                     ]);
 
-                    // TODO: Set nft id
                     setRegistered(isRegisted);
-                    setNftPrice(+formatEther(price))
+                    setNFTId(+nftId.toString());
                     setNumUsers(+numUsers.toString());
                 } catch (e) {
                     console.error("useFriendFi:useEffect()", e);
@@ -76,8 +74,8 @@ export function useFriendFi() {
     }, [mintListeners, chainId, etherProvider]);
 
     const register = useCallback(() => {
-        const address = friendKeyManagerContract.getAddress(chainId);
-        const contract = friendKeyManagerContract.getContract(chainId);
+        const address = userManagerContract.getAddress(chainId);
+        const contract = userManagerContract.getContract(chainId);
         const data = contract.interface.encodeFunctionData('register', [uuid, token]);
         return sendTransaction({
             to: address,
@@ -112,7 +110,6 @@ export function useFriendFi() {
     return {
         registered,
         nftId,
-        nftPrice,
         numUsers,
         register,
         batchMint,
