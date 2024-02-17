@@ -9,7 +9,7 @@ export default function Login() {
   const { connect } = useConnect();
   const { registered, register, fetching } = useFriendFi();
   return (
-    <div className="h-full w-full flex flex-col pt-[100px] pb-[80px]">
+    <div className="h-full w-full flex flex-col pt-[100px] pb-[80px] font-sans">
       <div className="flex flex-col items-center">
         <div className="w-[90px] h-[90px] bg-yellow-200 rounded-xl" />
         <p className="font-bold text-3xl mt-[30px]">The future of Social</p>

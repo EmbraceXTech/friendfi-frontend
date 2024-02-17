@@ -33,7 +33,7 @@ export default function Reigster() {
     }
   }, [registered, router, isFetching]);
   return (
-    <div className="w-full h-screen flex justify-center items-center">
+    <div className="w-full h-screen flex justify-center items-center font-sans">
       <PuffLoader color="#FDE047" size={150} />
     </div>
   );

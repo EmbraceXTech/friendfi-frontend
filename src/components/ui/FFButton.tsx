@@ -44,8 +44,8 @@ const FFButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return (
-      <div className={cn(className, "relative hover:opacity-80")}>
-        <Comp
+      <div className={cn("hover:opacity-80 h-full", className)}>
+        {/* <Comp
           className={cn(
             buttonVariants({ variant, size, className }),
             "absolute border border-yellow-400"
@@ -58,7 +58,20 @@ const FFButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "bg-yellow-400 absolute p-[26px] rounded-full -z-10",
             className
           )}
-        />
+        /> */}
+        <Comp
+          className={cn(
+            buttonVariants({ variant, size, className }),
+            "border rounded-3xl border-[#FFD400] pt-[1.4rem] pb-8 bg-[#FFD400] px-0.5"
+          )}
+          ref={ref}
+          {...props}
+        >
+          <div className="w-full rounded-full py-3 bg-[#FFF192]">{props.children}</div>
+        </Comp>
+        {/* <div
+          className={cn("bg-yellow-400 absolute rounded-full -z-10 h-full mt-3", className)}
+        /> */}
       </div>
     );
   }
