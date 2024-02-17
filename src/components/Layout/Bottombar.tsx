@@ -22,7 +22,7 @@ export default function Bottombar() {
               }`}
             >
               <div className="w-6 h-6">
-                <item.icon />
+                <item.icon strokeWidth={isActived ? 2.5 : 2} />
               </div>
               <p className={`${isActived ? "font-semibold" : "font-normal"}`}>
                 {item.name}

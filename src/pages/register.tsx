@@ -1,8 +1,6 @@
 import { useFriendFi } from "@/hooks/useFriendFi";
-import { delay } from "@/utils/time.util";
 import { useConnect } from "@particle-network/auth-core-modal";
 import { useRouter } from "next/router";
-import { resolve } from "path";
 import { useEffect } from "react";
 import { PuffLoader } from "react-spinners";
 

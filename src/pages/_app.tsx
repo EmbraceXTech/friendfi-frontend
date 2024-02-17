@@ -1,4 +1,4 @@
-import MainLayout from "@/components/ui/Layout/MainLayout";
+import MainLayout from "@/components/Layout/MainLayout";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
