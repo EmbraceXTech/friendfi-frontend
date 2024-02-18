@@ -1,36 +1,46 @@
-import { Db, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB = process.env.MONGODB_DB;
+const getClient = async () => {
+    if (!process.env.MONGODB_URI) {
+        throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
+    }
 
-let cachedClient: MongoClient;
-let cachedDb: Db;
+    const uri = process.env.MONGODB_URI;
+    const options = {};
 
-export async function connectToDatabase() {
-  if (cachedClient && cachedDb) {
-    return {
-      client: cachedClient,
-      db: cachedDb,
-    };
-  }
+    let client;
+    let clientPromise: Promise<MongoClient>;
 
-  if (!MONGODB_URI) {
-    throw new Error("Define the MONGODB_URI environmental variable");
-  }
+    if (process.env.NODE_ENV === "development") {
+        // In development mode, use a global variable so that the value
+        // is preserved across module reloads caused by HMR (Hot Module Replacement).
+        let globalWithMongo = global as typeof globalThis & {
+            _mongoClientPromise?: Promise<MongoClient>;
+        };
 
-  if (!MONGODB_DB) {
-    throw new Error("Define the MONGODB_DB environmental variable");
-  }
+        if (!globalWithMongo._mongoClientPromise) {
+            client = new MongoClient(uri, options);
+            globalWithMongo._mongoClientPromise = client.connect();
+        }
+        clientPromise = globalWithMongo._mongoClientPromise;
+    } else {
+        // In production mode, it's best to not use a global variable.
+        client = new MongoClient(uri, options);
+        clientPromise = client.connect();
+    }
 
-  let client = new MongoClient(MONGODB_URI);
-  await client.connect();
-  let db = client.db(MONGODB_DB);
+    return await clientPromise
+}
 
-  cachedClient = client;
-  cachedDb = db;
+const getDB = async () => {
+    const client = await getClient();
+    return client.db(process.env.MONGODB_DB || "")
+}
 
-  return {
-    client: cachedClient,
-    db: cachedDb,
-  };
+
+// Export a module-scoped MongoClient promise. By doing this in a
+// separate module, the client can be shared across functions.
+export const mongo = {
+    getClient,
+    getDB
 }

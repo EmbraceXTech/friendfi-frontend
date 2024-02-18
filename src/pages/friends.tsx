@@ -7,7 +7,7 @@ import { IconName } from "@/components/ui/iconName";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBalance } from "@/hooks/useBalance";
 import { useFriendFi } from "@/hooks/useFriendFi";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Friends() {
   const { value } = useBalance();
@@ -18,10 +18,26 @@ export default function Friends() {
   const [loadingSheetVisible, setLoadingSheetVisible] = useState(false);
   const [successSheetVisible, setSuccessSheetVisible] = useState(false);
 
-  const { mintFee, batchMint, waitForMintResult } = useFriendFi();
+  const { mintFee, friendKeys, batchMint, fetchFriendKeys, waitForMintResult } =
+    useFriendFi();
 
-  const friendsList: any[] = [];
-  const numFriends = 0;
+  const numFriends = friendKeys.length;
+
+  const friendList = useMemo(() => {
+    return friendKeys.map((friendKey) => ({
+      name: friendKey.name,
+      subName: friendKey.name,
+      keys: {
+        common: friendKey.balance,
+        close: 0,
+        best: 0,
+      },
+    }));
+  }, [numFriends]);
+
+  useEffect(() => {
+    fetchFriendKeys();
+  }, [fetchFriendKeys]);
 
   const changeRandomAmount = (amount: number) => {
     setRandomAmount((randomAmount) =>
@@ -42,10 +58,10 @@ export default function Friends() {
       console.error(e);
     }
     setLoadingSheetVisible(false);
-  }
+  };
 
   const fee = useMemo(() => {
-    return (randomAmount * mintFee)
+    return randomAmount * mintFee;
   }, [randomAmount, mintFee]);
 
   const openText = useMemo(() => {
@@ -118,37 +134,36 @@ export default function Friends() {
             </FFButton>
           </RandomLoadingSheet>
           <RandomSuccessSheet isOpenForce={successSheetVisible} />
-
         </TabsContent>
         <TabsContent
           value="listFriends"
           className="text-center text-sm font-sans flex flex-col justify-center items-center h-full w-full space-y-3"
         >
-          {
-            numFriends === 0 ? (
-              <>
-                <div className="mt-[200px]">
-                  <h2 className="text-xl font-semibold">Find some friend</h2>
-                  <p className="text-secondary">
-                    You have never conneted to anyone yet.
-                  </p>
-                  <p className="text-secondary">Let&apos;s discover new friends!</p>
-                </div>
-                <div className="w-36 mt-6">
-                  <FFButton
-                    className="w-full text-base"
-                    onClick={() => setCurrentTab("discover")}
-                  >
-                    Discover
-                  </FFButton>
-                </div>
-              </>
-            ) : (
-              friendsList.map((friend, index) => (
-                <FriendCard {...friend} key={index} />
-              ))
-            )
-          }
+          {numFriends === 0 ? (
+            <>
+              <div className="mt-[200px]">
+                <h2 className="text-xl font-semibold">Find some friend</h2>
+                <p className="text-secondary">
+                  You have never conneted to anyone yet.
+                </p>
+                <p className="text-secondary">
+                  Let&apos;s discover new friends!
+                </p>
+              </div>
+              <div className="w-36 mt-6">
+                <FFButton
+                  className="w-full text-base"
+                  onClick={() => setCurrentTab("discover")}
+                >
+                  Discover
+                </FFButton>
+              </div>
+            </>
+          ) : (
+            friendList.map((friend, index) => (
+              <FriendCard {...friend} key={index} />
+            ))
+          )}
         </TabsContent>
       </Tabs>
     </div>

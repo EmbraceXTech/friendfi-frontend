@@ -11,16 +11,6 @@ import { ChainID } from "@covalenthq/client-sdk";
 const INTERVAL = 5 * 1000;
 const TIMEOUT = 60 * 1000;
 
-type MintListener = (
-  level: number,
-  operator: string,
-  from: string,
-  to: string,
-  ids: bigint[],
-  values: bigint[],
-  txHash: string
-) => void;
-
 type FriendKey = {
   contractAddress: string;
   level: number;
@@ -47,10 +37,6 @@ export const useFriendFi = () => {
   const [numUsers, setNumUsers] = useState(0);
   const [friendKeys, setFriendKeys] = useState<FriendKey[]>([]);
   const [mintFee, setMintFee] = useState(0);
-
-  const [mintListeners, setMintListeners] = useState<
-    Record<number, MintListener>
-  >({});
 
   const uuid = userInfo ? userInfo.uuid : "";
   const token = userInfo ? userInfo.token : "";
@@ -96,27 +82,6 @@ export const useFriendFi = () => {
       setFetching(false);
     })();
   }, [userInfo, chainId, provider, address, fetchData]);
-
-  // Event listeners
-  useEffect(() => {
-    // const listeners = [0, 1, 2].map(level => (
-    //     (operator: string, from: string, to: string, ids: bigint[], values: bigint[], event: any) => {
-    //         Object.values(mintListeners).forEach(fn => fn(level, operator, from, to, ids, values, event.transactionHash))
-    //     }
-    // ))
-    // for (let level = 0; level < 3; level++) {
-    //     const contract = friendKeyContract.getContract(chainId, level, etherProvider);
-    //     const event = contract.getEvent("TransferBatch")
-    //     contract.on(event, listeners[level]);
-    // }
-    // return () => {
-    //     for (let level = 0; level < 3; level++) {
-    //         const contract = friendKeyContract.getContract(chainId, level, etherProvider);
-    //         const event = contract.getEvent("TransferBatch")
-    //         contract.off(event, listeners[level]);
-    //     }
-    // }
-  }, [mintListeners, chainId, etherProvider]);
 
   const register = useCallback(() => {
     const address = userManagerContract.getAddress(chainId);
@@ -258,24 +223,6 @@ export const useFriendFi = () => {
     })
   }, [fetchMintResult]);
 
-  const addMintListener = useCallback(
-    (fn: MintListener) => {
-      const id = Math.floor(Math.random() * 1000);
-      mintListeners[id] = fn;
-      setMintListeners({ ...mintListeners });
-      return id;
-    },
-    [mintListeners]
-  );
-
-  const removeMintListener = useCallback(
-    (id: number) => {
-      delete mintListeners[id];
-      setMintListeners({ ...mintListeners });
-    },
-    [mintListeners]
-  );
-
   return {
     fetching,
     registered,
@@ -289,7 +236,5 @@ export const useFriendFi = () => {
     batchMint,
     waitForMintResult,
     fetchMintResult,
-    addMintListener,
-    removeMintListener,
   };
 };
