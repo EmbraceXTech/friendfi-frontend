@@ -65,5 +65,5 @@ export default function Topbar() {
     }
   }, [pathname]);
 
-  return <div className="w-full pt-6">{Header}</div>;
+  return <div className="w-full">{Header}</div>;
 }

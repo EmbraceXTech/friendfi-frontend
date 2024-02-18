@@ -12,7 +12,7 @@ const fonts = Rubik({
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={`${fonts.variable} font-sans`}>
+    <main className={`${fonts.variable} font-sans h-screen pt-6`}>
       <MainLayout>
         <Topbar />
         <Component {...pageProps} />

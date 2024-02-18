@@ -16,7 +16,7 @@ export default function Home() {
   ];
   if (isLayoutLoading) return <></>;
   return (
-    <div className="text-center text-sm font-sans flex flex-col mt-7 h-screen w-full">
+    <div className="text-center text-sm font-sans flex flex-col mt-7 w-full">
       <MyPostBar />
       {mockPostList.map((post, key) => {
         return (

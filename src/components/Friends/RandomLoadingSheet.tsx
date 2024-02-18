@@ -38,7 +38,7 @@ export default function RandomLoadingSheet({
         {children}
       </SheetTrigger>
       <SheetContent className=" rounded-t-2xl h-1/2" side="bottom">
-        <SheetHeader className="h-full ">
+        <SheetHeader className="h-full  max-w-[500px] mx-auto">
           <SheetDescription className="min-h-52  flex flex-col justify-between items-center text-center text-black h-full">
             <div />
             <div className="space-y-3 flex flex-col items-center">
