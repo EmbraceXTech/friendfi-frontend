@@ -1,9 +1,7 @@
-import { Inter } from "next/font/google";
 import ParticleProvider from "@/providers/particle.provider";
 import AuthProvider from "@/providers/auth.provider";
 import { usePathname } from "next/navigation";
 import Bottombar from "./Bottombar";
-const inter = Inter({ subsets: ["latin"] });
 
 export default function MainLayout({
   children,
@@ -13,12 +11,16 @@ export default function MainLayout({
   const path = usePathname();
   return (
     <div
-      className={`h-screen max-w-[500px] mx-auto relative ${inter.className}`}
+      className={`h-full max-w-[500px] mx-auto relative`}
     >
       <ParticleProvider>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <div className="overflow-scroll min-h-full">
+            {children}
+            {path !== "/login" && path !== "/register" && <Bottombar />}
+          </div>
+        </AuthProvider>
       </ParticleProvider>
-      {path !== "/login" && <Bottombar />}
     </div>
   );
 }

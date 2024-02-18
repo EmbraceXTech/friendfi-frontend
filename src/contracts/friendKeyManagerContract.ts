@@ -15,61 +15,7 @@ function getContract(chainId: number, provider?: ethers.Provider | ethers.Signer
     return FriendKeyManager__factory.connect(contractAddress, provider);
 }
 
-function isRegistered(uuid: string, chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.isRegistered(uuid);
-}
-
-function addressUUIDs(addr: string, chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.addressUUIDs(addr);
-}
-
-function uuidAddresses(uuid: string, chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.uuidAddresses(uuid);
-}
-
-function addressPrice(addr: string, chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.addressPrice(addr);
-}
-
-function uuidPrice(uuid: string, chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.uuidPrice(uuid);
-}
-
-function addresses(index: number, chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.addresses(index);
-}
-
-function uuids(index: number, chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.uuids(index);
-}
-
-function prices(index: number, chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.prices(index);
-}
-
-function numUsers(chainId: number, provider?: ethers.Provider | ethers.Signer) {
-    const contract = getContract(chainId, provider);
-    return contract.numUsers();
-}
-
 export const friendKeyManagerContract = {
     getAddress,
-    getContract,
-    isRegistered,
-    addressUUIDs,
-    uuidAddresses,
-    addressPrice,
-    uuids,
-    prices,
-    uuidPrice,
-    addresses,
-    numUsers
+    getContract
 }
