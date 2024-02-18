@@ -8,7 +8,6 @@ import { useBalance } from "@/hooks/useBalance";
 import { useRouter } from "next/router";
 
 // This is the test page to try contract connection
-
 export default function TestScreen() {
 
     const router = useRouter();
@@ -16,7 +15,7 @@ export default function TestScreen() {
     const { disconnect } = useConnect();
     const { userInfo } = useAuthCore();
     const { address, chainInfo } = useEthereum();
-    const { registered, nftId, numUsers, friendKeys, register, batchMint, fetchFriendKeys, addMintListener, removeMintListener } = useFriendFi();
+    const { registered, nftId, numUsers, friendKeys, register, batchMint, fetchFriendKeys } = useFriendFi();
     const balance = useBalance();
 
     const [mintAmount, setMintAmount] = useState("1");
@@ -44,25 +43,6 @@ export default function TestScreen() {
             console.error(e);
         }
     }
-
-    // Listen to mint event and display success status
-    useEffect(() => {
-        const id = addMintListener((level: number, operator: string, from: string, to: string, ids: bigint[], values: bigint[], txHash: string) => {
-            const txIndex = pendingTxs.findIndex(hash => hash === txHash);
-            if (txIndex >= 0) {
-                alert(`Mint success: ${JSON.stringify({ level, operator, from, to, ids, values, txHash })}`);
-                setPendingTxs(pendingTxs.filter((_, id) => id !== txIndex));
-            }
-        })
-
-        return () => {
-            removeMintListener(id);
-        }
-    }, [setPendingTxs]);
-
-    useEffect(() => {
-        fetchFriendKeys();
-    }, [address, chainInfo, fetchFriendKeys]);
 
     if (useHydrationFix()) return <></>
 

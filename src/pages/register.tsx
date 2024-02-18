@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useFriendFi } from "@/hooks/useFriendFi";
+import { backend } from "@/services/backend";
 import { useConnect } from "@particle-network/auth-core-modal";
+import { useAuthCore } from "@particle-network/auth-core-modal";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { PuffLoader } from "react-spinners";
@@ -11,6 +13,7 @@ export default function Reigster() {
   const router = useRouter();
   const { registered, fetching, register, fetchData } = useFriendFi();
   const { disconnect } = useConnect();
+  const { userInfo } = useAuthCore();
 
   const [registering, setRegistering] = useState(false);
   const [iv, setIv] = useState<NodeJS.Timeout | null>(null);
@@ -32,6 +35,18 @@ export default function Reigster() {
       }
     }
   }, [registered, router, iv]);
+
+  useEffect(() => {
+    if (userInfo) {
+      const uuid = userInfo.uuid;
+      const token = userInfo.token;
+      backend.register(uuid, token).then(res => {
+        console.log("Register: ", res);
+      }).catch(e => {
+        console.error(e);
+      })
+    }
+  }, [userInfo]);
 
   const handleRegister = async () => {
     try {

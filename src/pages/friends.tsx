@@ -7,7 +7,7 @@ import { IconName } from "@/components/ui/iconName";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBalance } from "@/hooks/useBalance";
 import { useFriendFi } from "@/hooks/useFriendFi";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Friends() {
   const { value } = useBalance();
@@ -18,10 +18,25 @@ export default function Friends() {
   const [loadingSheetVisible, setLoadingSheetVisible] = useState(false);
   const [successSheetVisible, setSuccessSheetVisible] = useState(false);
 
-  const { mintFee, batchMint, waitForMintResult } = useFriendFi();
+  const { mintFee, friendKeys, batchMint, fetchFriendKeys, waitForMintResult } = useFriendFi();
 
-  const friendsList: any[] = [];
-  const numFriends = 0;
+  const numFriends = friendKeys.length;
+
+  const friendList = useMemo(() => {
+    return friendKeys.map(friendKey => ({
+      name: friendKey.name,
+      subName: friendKey.name,
+      keys: {
+        common: friendKey.balance,
+        close: 0,
+        best: 0
+      }
+    }))
+  }, [numFriends]);
+
+  useEffect(() => {
+    fetchFriendKeys();
+  }, [fetchFriendKeys])
 
   const changeRandomAmount = (amount: number) => {
     setRandomAmount((randomAmount) =>
@@ -144,7 +159,7 @@ export default function Friends() {
                 </div>
               </>
             ) : (
-              friendsList.map((friend, index) => (
+              friendList.map((friend, index) => (
                 <FriendCard {...friend} key={index} />
               ))
             )
