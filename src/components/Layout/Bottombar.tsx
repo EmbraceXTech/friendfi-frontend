@@ -8,7 +8,7 @@ export default function Bottombar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex justify-center border p-3 rounded-full shadow-sm absolute bottom-0 px-10 mb-5 z-20 left-5 right-5">
+    <div className="flex justify-center border p-3 rounded-full shadow-sm absolute bottom-0 px-10 mb-5 z-20 left-5 right-5 font-sans">
       <div className="flex items-center space-x-12 select-none text-gray-800">
         {BOTTOM_MENU_ITEMS.map((item) => {
           const isActived =
@@ -22,7 +22,7 @@ export default function Bottombar() {
               }`}
             >
               <div className="w-6 h-6">
-                <item.icon />
+                <item.icon strokeWidth={isActived ? 2.5 : 2} />
               </div>
               <p className={`${isActived ? "font-semibold" : "font-normal"}`}>
                 {item.name}

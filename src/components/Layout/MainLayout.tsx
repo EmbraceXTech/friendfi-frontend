@@ -16,9 +16,11 @@ export default function MainLayout({
       className={`h-screen max-w-[500px] mx-auto relative ${inter.className}`}
     >
       <ParticleProvider>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          {path !== "/login" && path !== "/register" && <Bottombar />}
+        </AuthProvider>
       </ParticleProvider>
-      {path !== "/login" && <Bottombar />}
     </div>
   );
 }

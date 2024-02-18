@@ -1,6 +1,6 @@
-import { ModalProvider } from "@particle-network/connectkit";
 import { AvalancheTestnet } from "@particle-network/chains";
-import { evmWallets } from "@particle-network/connectors";
+import { AuthType } from "@particle-network/auth-core";
+import { AuthCoreContextProvider, PromptSettingType } from "@particle-network/auth-core-modal";
 
 export default function ParticleProvider({
   children,
@@ -8,31 +8,32 @@ export default function ParticleProvider({
   children: React.ReactNode;
 }) {
   return (
-    <ModalProvider
+    <AuthCoreContextProvider
       options={{
-        projectId: process.env.NEXT_PUBLIC_PROJECT_ID || "",
-        clientKey: process.env.NEXT_PUBLIC_CLIENT_KEY || "",
-        appId: process.env.NEXT_PUBLIC_APP_ID || "",
-        chains: [AvalancheTestnet],
-        wallet: {
-          visible: true,
-          // supportChains: [AvalancheTestnet],
-          customStyle: {},
+        projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
+        clientKey: process.env.NEXT_PUBLIC_CLIENT_KEY!,
+        appId: process.env.NEXT_PUBLIC_APP_ID!,
+        authTypes: [AuthType.email, AuthType.google, AuthType.twitter],
+        themeType: "dark",
+        fiatCoin: "USD",
+        language: "en",
+        erc4337: {
+          name: "SIMPLE",
+          version: "1.0.0",
         },
         promptSettingConfig: {
-          promptPaymentPasswordSettingWhenSign: 1,
-          promptMasterPasswordSettingWhenLogin: 1,
+          promptPaymentPasswordSettingWhenSign: PromptSettingType.first,
+          promptMasterPasswordSettingWhenLogin: PromptSettingType.first,
         },
-        // connectors: evmWallets({
-        //   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "",
-        //   showQrModal: false,
-        // }),
+        wallet: {
+          visible: true,
+          customStyle: {
+            supportChains: [AvalancheTestnet],
+          },
+        },
       }}
-      theme={"light"}
-      language={"en"}
-      walletSort={["Particle Auth", "Wallet"]}
     >
       {children}
-    </ModalProvider>
+    </AuthCoreContextProvider>
   );
 }

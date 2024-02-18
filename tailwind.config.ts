@@ -32,6 +32,14 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        sans: ['var(--font-rubik)'],
+      },
+      colors: {
+        "secondary": "#536471",
+        "brand": "#FFDD3C",
+        "tertiary": "#A3A3A3",
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],
