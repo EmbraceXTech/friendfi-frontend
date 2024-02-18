@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useFriendFi } from "@/hooks/useFriendFi";
 import { Search, Notification } from "../Icon";
@@ -13,9 +14,18 @@ export default function Topbar() {
       case "/":
         return (
           <div className="flex justify-between items-end">
-            <h1 className="text-brand text-2xl font-sans font-bold">
-              FriendFi
-            </h1>
+            <div className="flex space-x-2">
+              <Image
+                src="/logo.svg"
+                width={28}
+                height={28}
+                alt="friendfi logo"
+              />
+              <h1 className="text-2xl font-sans font-bold">
+                friendfi
+              </h1>
+            </div>
+
             <div className="flex space-x-2">
               <Search />
               <Notification />

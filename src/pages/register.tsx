@@ -16,6 +16,7 @@ export default function Reigster() {
   }, [registered, router]);
 
   useEffect(() => {
+    console.log(fetching, registered);
     if (!registered && !fetching) {
       console.log("registered: ", registered);
       (async () => {
