@@ -7,7 +7,7 @@ import { useFriendFi } from "@/hooks/useFriendFi";
 
 export default function Login() {
   const { connect } = useConnect();
-  const { registered, register, fetching } = useFriendFi();
+  const { registered, register, fetchData } = useFriendFi();
   return (
     <div className="h-full w-full flex flex-col pt-[100px] pb-[80px] font-sans">
       <div className="flex flex-col items-center">
@@ -25,7 +25,7 @@ export default function Login() {
             await connect({
               chain: AvalancheTestnet,
             });
-            await fetching();
+            await fetchData();
             if (!registered) {
               await register();
             }
