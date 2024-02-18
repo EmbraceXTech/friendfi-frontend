@@ -17,8 +17,13 @@ export default function MainLayout({
     >
       <ParticleProvider>
         <AuthProvider>
-          {children}
-          {path !== "/login" && path !== "/register" && <Bottombar />}
+          <div className="h-screen overflow-scroll">
+            <div className="pb-8">
+              {children}
+            </div>
+            <div className='h-9 w-full bg-white' />
+            {path !== "/login" && path !== "/register" && <Bottombar />}
+          </div>
         </AuthProvider>
       </ParticleProvider>
     </div>
