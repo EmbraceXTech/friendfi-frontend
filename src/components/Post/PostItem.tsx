@@ -1,4 +1,4 @@
-import { IconName } from "../ui/iconPost";
+import { IconName } from "../ui/iconName";
 import { FriendLevel } from "@/constants/friendLevel";
 import { calculateMinutesDifference } from "@/utils/time.util";
 import { useEffect, useMemo, useState } from "react";

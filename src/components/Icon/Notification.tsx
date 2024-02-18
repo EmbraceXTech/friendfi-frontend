@@ -13,7 +13,7 @@ const Notification = () => {
         stroke="#536471"
         stroke-width="2"
         stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

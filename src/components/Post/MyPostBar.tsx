@@ -1,5 +1,5 @@
 import { useAuthCore } from "@particle-network/auth-core-modal";
-import { IconName } from "../ui/iconPost";
+import { IconName } from "../ui/iconName";
 import { Picture } from "../Icon";
 import { useMemo } from "react";
 import { useHydrationFix } from "@/hooks/useHydrationFix";
