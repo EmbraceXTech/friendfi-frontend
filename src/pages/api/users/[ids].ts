@@ -15,9 +15,10 @@ export default async function handler(
 
   if (req.method === "GET") {
     try {
-      const db = await mongo.getDB();
+      const { db } = await mongo();
 
       const ids = req.query.ids ? (req.query.ids as string).split(",") : [];
+      console.log(ids);
       const users = await db
         .collection("users")
         .find({ _id: { $in: ids as any } })

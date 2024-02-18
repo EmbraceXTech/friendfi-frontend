@@ -7,6 +7,7 @@ import { IconName } from "@/components/ui/iconName";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBalance } from "@/hooks/useBalance";
 import { useFriendFi } from "@/hooks/useFriendFi";
+import { useEthereum } from "@particle-network/auth-core-modal";
 import { useEffect, useMemo, useState } from "react";
 
 export default function Friends() {
@@ -21,7 +22,9 @@ export default function Friends() {
   const { mintFee, friendKeys, batchMint, fetchFriendKeys, waitForMintResult } =
     useFriendFi();
 
-  const numFriends = friendKeys.length;
+  console.log(friendKeys);
+  const { address } = useEthereum();
+  console.log(address);
 
   const friendList = useMemo(() => {
     return friendKeys.map((friendKey) => ({
@@ -33,7 +36,7 @@ export default function Friends() {
         best: 0,
       },
     }));
-  }, [numFriends]);
+  }, [friendKeys]);
 
   useEffect(() => {
     fetchFriendKeys();
@@ -139,7 +142,7 @@ export default function Friends() {
           value="listFriends"
           className="text-center text-sm font-sans flex flex-col justify-center items-center h-full w-full space-y-3"
         >
-          {numFriends === 0 ? (
+          {friendKeys.length === 0 ? (
             <>
               <div className="mt-[200px]">
                 <h2 className="text-xl font-semibold">Find some friend</h2>

@@ -30,6 +30,7 @@ async function validateParticleAuth(uuid: string, token: string) {
       .then((res) => res.data);
     return res;
   } catch (e) {
+    console.log("fetch:validateParticleAuth", e);
     return null;
   }
 }
@@ -38,14 +39,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const { uuid, token } = req.body;
+  const { uuid, token, userInfo } = req.body;
 
   if (req.method === "POST") {
     // Process a POST request
     try {
-      const db = await mongo.getDB();
+      const { db } = await mongo();
       const userCollection = db.collection("users");
       const particleUser = await validateParticleAuth(uuid, token);
+      // const particleUser = userInfo;
 
       if (particleUser) {
         const userData = { uuid: uuid, ...particleUser.result };

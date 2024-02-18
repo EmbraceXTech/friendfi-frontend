@@ -41,10 +41,11 @@ export default function Reigster() {
 
   useEffect(() => {
     if (userInfo) {
+      console.log(userInfo);
       const uuid = userInfo.uuid;
       const token = userInfo.token;
       backend
-        .register(uuid, token)
+        .register(uuid, token, userInfo)
         .then((res: any) => {
           console.log("Register: ", res);
         })

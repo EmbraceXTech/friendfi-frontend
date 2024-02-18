@@ -32,6 +32,7 @@ export default function ProfileScreen({
     setMergeStateSheet("complete");
     console.log("merge");
   };
+  if (name === "") return <></>;
   return (
     <div className="text-sm font-sans flex flex-col w-full">
       <div className="w-full h-32 bg-[#2B2A4D] relative">
@@ -75,11 +76,11 @@ export default function ProfileScreen({
         Joined {userInfo && formatDateString(userInfo?.created_at || "")}
       </div>
       <span className="mt-1 text-secondary">
-        <span className="text-black">167</span> Common{" "}
-        <span className="text-black">53</span> Close{" "}
-        <span className="text-black">12</span> Best
+        <span className="text-black">3</span> Common{" "}
+        <span className="text-black">0</span> Close{" "}
+        <span className="text-black">0</span> Best
       </span>
-      <MenuTab />
+      <MenuTab name={userInfo?.name || ""} uuid={userInfo?.uuid || ""} />
       {mode === "me" && isOpen && setIsOpen && (
         <MoreSheet isOpenForce={isOpen} setIsOpenForce={setIsOpen} />
       )}

@@ -1,23 +1,28 @@
-import { useMemo, useState } from "react";
-import { useAuthCore } from "@particle-network/auth-core-modal";
+import { useEffect, useMemo, useState } from "react";
 
 import { useHydrationFix } from "@/hooks/useHydrationFix";
 import { getXProfile } from "@/utils/url.util";
 import { Facebook, Google, X } from "@/components/Icon/Social";
 import ProfileScreen from "@/components/ui/Screens/ProfileScreen";
 import { useRouter } from "next/router";
+import { backend } from "@/services/backend";
 
 export default function Friend() {
-  const { userInfo } = useAuthCore();
+  const [userInfo, setUserInfo] = useState<any>(null);
   const [isOpenMerge, setIsOpenMerge] = useState(false);
   const router = useRouter();
 
-  // TODO: handle this
+  useEffect(() => {
+    console.log(router.query.id);
+    backend.getUser(router.query.id as string).then((res) => {
+      console.log(res?.data.data[0]);
+      setUserInfo(res?.data.data[0]);
+    });
+  }, [router.query.id]);
+
   const name = useMemo(() => {
-    return userInfo?.thirdparty_user_info?.user_info
-      ? userInfo.thirdparty_user_info?.user_info?.name
-      : "";
-  }, [userInfo?.thirdparty_user_info?.user_info]);
+    return userInfo?.name;
+  }, [userInfo]);
 
   const socialMediaLink = useMemo(() => {
     const provider = userInfo?.thirdparty_user_info?.provider;
@@ -26,7 +31,11 @@ export default function Friend() {
         return <Google />;
       case "twitterv1":
         return (
-          <a href={getXProfile(name)} target="_blank" className="text-blue-400">
+          <a
+            href={getXProfile(userInfo?.name)}
+            target="_blank"
+            className="text-blue-400"
+          >
             <X />
           </a>
         );
@@ -35,7 +44,7 @@ export default function Friend() {
       default:
         return;
     }
-  }, [name, userInfo?.thirdparty_user_info?.provider]);
+  }, [userInfo?.name, userInfo?.thirdparty_user_info?.provider]);
 
   const isLayoutLoading = useHydrationFix();
   if (isLayoutLoading) return <></>;
@@ -49,7 +58,7 @@ export default function Friend() {
 
   return (
     <ProfileScreen
-      name={name}
+      name={name || ''}
       socialMediaLink={socialMediaLink}
       mode="friend"
       userInfo={userInfo}

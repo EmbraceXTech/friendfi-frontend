@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAuthCore } from "@particle-network/auth-core-modal";
 
 import { useHydrationFix } from "@/hooks/useHydrationFix";
 import { getXProfile } from "@/utils/url.util";
 import { Facebook, Google, X } from "@/components/Icon/Social";
 import ProfileScreen from "@/components/ui/Screens/ProfileScreen";
+import { backend } from "@/services/backend";
 
 export default function Menu() {
   const { userInfo } = useAuthCore();

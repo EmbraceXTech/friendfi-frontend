@@ -4,6 +4,8 @@ import { calculateMinutesDifference } from "@/utils/time.util";
 import { useEffect, useMemo, useState } from "react";
 import { Best, Close, Common } from "../Icon/Role";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useAuthCore } from "@particle-network/auth-core-modal";
 
 interface PostItemProps {
   name: string;
@@ -11,6 +13,7 @@ interface PostItemProps {
   content: string;
   image?: string;
   level: FriendLevel;
+  uuid: string;
 }
 
 export default function PostItem({
@@ -19,18 +22,21 @@ export default function PostItem({
   content,
   image,
   level,
+  uuid,
 }: PostItemProps) {
   const [postDiff, setPostDiff] = useState<number>(
     calculateMinutesDifference(createdAt)
   );
+  const router = useRouter();
+  const { userInfo } = useAuthCore();
 
   const levelIcon = useMemo(() => {
-    switch (level) {
-      case 3:
-        return <Best />;
+    switch (+level) {
       case 2:
-        return <Close />;
+        return <Best />;
       case 1:
+        return <Close />;
+      case 0:
         return <Common />;
       default:
         return <div />;
@@ -47,7 +53,14 @@ export default function PostItem({
   return (
     <div className="font-sans space-y-4">
       <div className="flex justify-between items-center">
-        <div className="space-x-2 flex items-center">
+        <button
+          className="space-x-2 flex items-center"
+          onClick={() =>
+            userInfo?.uuid === uuid
+              ? router.push("/menu")
+              : router.push(`/friend?id=${uuid}`)
+          }
+        >
           <IconName name={name} />
           <div className="text-start">
             <p className="text-sm font-semibold">{name}</p>
@@ -55,7 +68,7 @@ export default function PostItem({
               {postDiff} minutes ago
             </p>
           </div>
-        </div>
+        </button>
         {levelIcon}
       </div>
       <p className="text-start text-sm">{content}</p>

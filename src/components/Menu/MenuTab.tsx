@@ -1,19 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PostItem from "../Post/PostItem";
+import { backend } from "@/services/backend";
 
-export default function MenuTab() {
+export default function MenuTab({
+  uuid,
+  name,
+}: {
+  name: string;
+  uuid: string;
+}) {
   const [currentTab, setCurrentTab] = useState<"post" | "statistics">("post");
-  const mockPostList = [
-    {
-      name: "John Doe",
-      createdAt: new Date(),
-      content: "Hello, world!",
-      image: undefined,
-      level: 2,
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    try {
+      (async () => {
+        try {
+          const postsResponse = await backend.getPost(uuid);
+          console.log(postsResponse);
+          const _posts = postsResponse?.data.data.map((post: any) => {
+            return {
+              name: name,
+              content: post.content,
+              createdAt: post.createdAt,
+              level: post.tier,
+              image: undefined,
+              uuid: uuid,
+            };
+          });
+          setPosts(_posts);
+        } catch (error) {
+          console.error("Error fetching posts:", error);
+        }
+      })();
+    } catch (e) {
+      console.error(e);
+    }
+  }, [name, uuid]);
   return (
     <div className="pt-7 font-sans">
       <Tabs
@@ -28,14 +52,16 @@ export default function MenuTab() {
         </TabsList>
         <hr />
         <TabsContent value="post" className="flex flex-col px-1">
-          {mockPostList.map((post, key) => {
-            return (
-              <>
-                <PostItem key={key} {...post} />
-                <hr className="my-5" />
-              </>
-            );
-          })}
+          {posts &&
+            posts.length > 0 &&
+            posts.map((post: any, key) => {
+              return (
+                <>
+                  <PostItem key={key} {...post} />
+                  <hr className="my-5" />
+                </>
+              );
+            })}
         </TabsContent>
         <TabsContent
           value="statistics"

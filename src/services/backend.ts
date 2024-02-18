@@ -1,12 +1,63 @@
 import axios from "axios";
 
-const register = async (uuid: string, token: string) => {
-  const res = axios
-    .post("/api/register", { uuid, token })
-    .then((res) => res.data);
-  return res;
+const register = async (
+  uuid: string,
+  token: string,
+  userInfo: import("@particle-network/auth-core").UserInfo
+) => {
+  try {
+    const res = await axios.post("/api/register", { uuid, token, userInfo });
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
 };
+
+const getUser = async (uuid: string) => {
+  try {
+    const res = await axios.get(`/api/users/${uuid}`);
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const createPost = async (data: {
+  content: string;
+  tier: string;
+  uuid: string;
+}) => {
+  try {
+    const res = await axios.post(`/api/posts`, data);
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const getPosts = async () => {
+  try {
+    const res = await axios.get(`/api/posts`);
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+const getPost = async (uuid: string) => {
+  try {
+    const res = await axios.get(`/api/posts/?uuid=${uuid}`);
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
+
+}
 
 export const backend = {
   register,
+  getUser,
+  createPost,
+  getPosts,
+  getPost,
 };
