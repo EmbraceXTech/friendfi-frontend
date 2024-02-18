@@ -5,6 +5,8 @@ import { friendKeyManagerContract } from "@/contracts/friendKeyManagerContract";
 import { MulticallWrapper } from "ethers-multicall-provider";
 import { friendKeyContract } from "@/contracts/friendKeyContract";
 import { userManagerContract } from "@/contracts/userManagerContract";
+import { covalent } from "@/services/covalent";
+import { ChainID } from "@covalenthq/client-sdk";
 
 type MintListener = (
   level: number,
@@ -16,6 +18,17 @@ type MintListener = (
   txHash: string
 ) => void;
 
+type FriendKey = {
+  contractAddress: string;
+  level: number;
+  balance: number;
+  tokenId: number;
+  tokenUri: string;
+  name: string;
+  description: string;
+  asset_url: string;
+}
+
 export const useFriendFi = () => {
   const { address, chainInfo, provider, sendTransaction } = useEthereum();
   const { userInfo } = useAuthCore();
@@ -24,6 +37,7 @@ export const useFriendFi = () => {
   const [registered, setRegistered] = useState(false);
   const [nftId, setNFTId] = useState(0);
   const [numUsers, setNumUsers] = useState(0);
+  const [friendKeys, setFriendKeys] = useState<FriendKey[]>([]);
 
   const [mintListeners, setMintListeners] = useState<
     Record<number, MintListener>
@@ -129,6 +143,37 @@ export const useFriendFi = () => {
     [address, chainId, etherProvider, sendTransaction]
   );
 
+  const fetchFriendKeys = useCallback(async () => {
+    if (address && chainId) {
+      const resp = await covalent.NftService.getNftsForAddress(chainId as ChainID, address, { "withUncached": true });
+      const contractAddress0 = friendKeyContract.getAddress(chainId, 0);
+      const contractAddress1 = friendKeyContract.getAddress(chainId, 1);
+      const contractAddress2 = friendKeyContract.getAddress(chainId, 2);
+      const formattedData: FriendKey[] = resp.data.items.reduce((prev, item) => {
+        let level = -1;
+        if (item.contract_address.toLowerCase() === contractAddress0.toLowerCase()) level = 0;
+        else if (item.contract_address.toLowerCase() === contractAddress1.toLowerCase()) level = 1;
+        else if (item.contract_address.toLowerCase() === contractAddress2.toLowerCase()) level = 2;
+        if (level >= 0) {
+          const data = {
+            contractAddress: item.contract_address,
+            level,
+            balance: +(item.balance || BigInt(0)).toString(),
+            tokenId: +(item.nft_data[0].token_id || BigInt(0)).toString(),
+            tokenUri: item.nft_data[0].token_url,
+            name: item.nft_data[0].external_data.name,
+            description: item.nft_data[0].external_data.description,
+            asset_url: item.nft_data[0].external_data.asset_url
+          }
+          return [...prev, data];
+        } else {
+          return prev;
+        }
+      }, [] as FriendKey[]);
+      setFriendKeys(formattedData);
+    }
+  }, [address, chainId]);
+
   const addMintListener = useCallback(
     (fn: MintListener) => {
       const id = Math.floor(Math.random() * 1000);
@@ -152,7 +197,9 @@ export const useFriendFi = () => {
     registered,
     nftId,
     numUsers,
+    friendKeys,
     fetchData,
+    fetchFriendKeys,
     register,
     batchMint,
     addMintListener,

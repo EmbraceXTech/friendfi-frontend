@@ -16,7 +16,7 @@ export default function TestScreen() {
     const { disconnect } = useConnect();
     const { userInfo } = useAuthCore();
     const { address, chainInfo } = useEthereum();
-    const { registered, nftId, numUsers, register, batchMint, addMintListener, removeMintListener } = useFriendFi();
+    const { registered, nftId, numUsers, friendKeys, register, batchMint, fetchFriendKeys, addMintListener, removeMintListener } = useFriendFi();
     const balance = useBalance();
 
     const [mintAmount, setMintAmount] = useState("1");
@@ -59,6 +59,10 @@ export default function TestScreen() {
             removeMintListener(id);
         }
     }, [setPendingTxs]);
+
+    useEffect(() => {
+        fetchFriendKeys();
+    }, [address, chainInfo, fetchFriendKeys]);
 
     if (useHydrationFix()) return <></>
 
@@ -111,8 +115,15 @@ export default function TestScreen() {
                 [0, 1, 2].map((level) => (
                     <div key={level} className="mt-2">
                         <div>Friend Key Level: {level}</div>
-                        <div>Total minted: "Need to use subgraph or Covalent"</div>
-                        <div>Friend Keys in wallet: "Need to use subgraph or Covalent"</div>
+                        <div>Friend Keys in wallet:</div>
+                        {
+                            friendKeys.filter(item => item.level === level).map(item => (
+                                <div key={item.tokenId}>
+                                    <div>ID: {item.tokenId}</div>
+                                    <div>Balance: {item.balance}</div>
+                                </div>
+                            ))
+                        }
                     </div>
                 ))
             }
