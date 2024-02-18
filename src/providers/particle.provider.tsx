@@ -13,7 +13,7 @@ export default function ParticleProvider({
         projectId: process.env.NEXT_PUBLIC_PROJECT_ID!,
         clientKey: process.env.NEXT_PUBLIC_CLIENT_KEY!,
         appId: process.env.NEXT_PUBLIC_APP_ID!,
-        authTypes: [AuthType.email, AuthType.google, AuthType.twitter],
+        authTypes: [AuthType.email, AuthType.google, AuthType.twitter, AuthType.facebook],
         themeType: "dark",
         fiatCoin: "USD",
         language: "en",

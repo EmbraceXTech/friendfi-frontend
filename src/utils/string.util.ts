@@ -6,4 +6,22 @@ const capitalizeFirstLetter = (inputString: string) => {
   return inputString.charAt(0).toUpperCase();
 };
 
-export { capitalizeFirstLetter };
+const truncateString = (
+  inputString: string,
+  prefixLength: number = 5,
+  suffixLength: number = 5
+) => {
+  if (
+    !inputString ||
+    inputString.length === 0 ||
+    inputString.length <= prefixLength + suffixLength
+  ) {
+    return inputString;
+  }
+
+  return `${inputString.slice(0, prefixLength)}...${inputString.slice(
+    -suffixLength
+  )}`;
+};
+
+export { capitalizeFirstLetter, truncateString };

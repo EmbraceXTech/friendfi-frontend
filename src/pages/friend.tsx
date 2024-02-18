@@ -5,11 +5,14 @@ import { useHydrationFix } from "@/hooks/useHydrationFix";
 import { getXProfile } from "@/utils/url.util";
 import { Facebook, Google, X } from "@/components/Icon/Social";
 import ProfileScreen from "@/components/ui/Screens/ProfileScreen";
+import { useRouter } from "next/router";
 
-export default function Menu() {
+export default function Friend() {
   const { userInfo } = useAuthCore();
-  const [isOpenMore, setIsOpenMore] = useState(false);
+  const [isOpenMerge, setIsOpenMerge] = useState(false);
+  const router = useRouter();
 
+  // TODO: handle this
   const name = useMemo(() => {
     return userInfo?.thirdparty_user_info?.user_info
       ? userInfo.thirdparty_user_info?.user_info?.name
@@ -37,14 +40,21 @@ export default function Menu() {
   const isLayoutLoading = useHydrationFix();
   if (isLayoutLoading) return <></>;
 
+  if (!router.query.id)
+    return (
+      <div className="flex items-center mt-20 w-full justify-center">
+        <div className="text-center text-2xl">Not Found 404</div>
+      </div>
+    );
+
   return (
     <ProfileScreen
       name={name}
       socialMediaLink={socialMediaLink}
-      mode="me"
+      mode="friend"
       userInfo={userInfo}
-      isOpen={isOpenMore}
-      setIsOpen={setIsOpenMore}
+      isOpen={isOpenMerge}
+      setIsOpen={setIsOpenMerge}
     />
   );
 }

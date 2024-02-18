@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useFriendFi } from "@/hooks/useFriendFi";
 import { backend } from "@/services/backend";
-import { useConnect } from "@particle-network/auth-core-modal";
+import { useConnect, useEthereum } from "@particle-network/auth-core-modal";
 import { useAuthCore } from "@particle-network/auth-core-modal";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -14,9 +14,12 @@ export default function Reigster() {
   const { registered, fetching, register, fetchData } = useFriendFi();
   const { disconnect } = useConnect();
   const { userInfo } = useAuthCore();
+  const { address } = useEthereum();
 
   const [registering, setRegistering] = useState(false);
   const [iv, setIv] = useState<NodeJS.Timeout | null>(null);
+
+  console.log(address);
 
   useEffect(() => {
     if (registered) {
@@ -73,7 +76,7 @@ export default function Reigster() {
   if (!registering) {
     return (
       <div className="w-full h-screen flex flex-col justify-center items-center font-sans">
-        <div>Oh, You're new here.</div>
+        <div>Oh, You&apos;re new here.</div>
         <div>Please complete the registration.</div>
         <div>Make sure you top up some gas to your wallet.</div>
         <div>(check your wallet on the buttom right corner)</div>
@@ -88,7 +91,7 @@ export default function Reigster() {
     <div className="w-full h-screen flex flex-col justify-center items-center font-sans text-center">
       <PuffLoader color="#FDE047" size={150} />
       <div>The process will take around 1 minute.</div>
-      <div>Once it's done, you will be automatically directed into the new world.</div>
+      <div>Once it&apos;s done, you will be automatically directed into the new world.</div>
       <div>Feel free to grab some water. It should be finishe by then...</div>
     </div>
   );
