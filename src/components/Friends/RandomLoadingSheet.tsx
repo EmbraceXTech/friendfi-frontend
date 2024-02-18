@@ -24,16 +24,15 @@ export default function RandomLoadingSheet({
   const [isOpen, setIsOpen] = useState(isOpenForce);
 
   useEffect(() => {
-    if (isOpenForce) {
-      setIsOpen(isOpenForce);
-    }
+    setIsOpen(isOpenForce);
   }, [isOpenForce]);
+
   return (
     <Sheet open={isOpen}>
       <SheetTrigger
         className="font-serif w-full"
         disabled={disabled}
-        onClick={() => setIsOpen(true)}
+      // onClick={() => setIsOpen(true)}
       >
         {children}
       </SheetTrigger>
@@ -43,11 +42,11 @@ export default function RandomLoadingSheet({
             <div />
             <div className="space-y-3 flex flex-col items-center">
               <ClipLoader color="#FFDD3C" size={55} />
-              <div className="font-medium text-xl">You are now discovering</div>
+              <div className="font-medium text-xl">Discovering new friends</div>
               <div className="text-secondary text-sm">{textPrice}</div>
             </div>
             <div className="text-secondary text-sm">
-              Confirm this transaction in your wallet
+              This process will take a moment. Please wait...
             </div>
           </SheetDescription>
         </SheetHeader>

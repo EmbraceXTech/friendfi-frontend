@@ -1,12 +1,15 @@
 import { useEthereum, useAuthCore } from "@particle-network/auth-core-modal";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { formatEther, ethers } from "ethers";
+import { formatEther, ethers, parseEther } from "ethers";
 import { friendKeyManagerContract } from "@/contracts/friendKeyManagerContract";
 import { MulticallWrapper } from "ethers-multicall-provider";
 import { friendKeyContract } from "@/contracts/friendKeyContract";
 import { userManagerContract } from "@/contracts/userManagerContract";
 import { covalent } from "@/services/covalent";
 import { ChainID } from "@covalenthq/client-sdk";
+
+const INTERVAL = 5 * 1000;
+const TIMEOUT = 60 * 1000;
 
 type MintListener = (
   level: number,
@@ -29,6 +32,11 @@ type FriendKey = {
   asset_url: string;
 }
 
+type MintedKey = {
+  id: number,
+  value: number
+}
+
 export const useFriendFi = () => {
   const { address, chainInfo, provider, sendTransaction } = useEthereum();
   const { userInfo } = useAuthCore();
@@ -38,6 +46,7 @@ export const useFriendFi = () => {
   const [nftId, setNFTId] = useState(0);
   const [numUsers, setNumUsers] = useState(0);
   const [friendKeys, setFriendKeys] = useState<FriendKey[]>([]);
+  const [mintFee, setMintFee] = useState(0);
 
   const [mintListeners, setMintListeners] = useState<
     Record<number, MintListener>
@@ -60,16 +69,19 @@ export const useFriendFi = () => {
           chainId,
           multiCallprovider
         );
+        const keyManagerContract = friendKeyManagerContract.getContract(chainId, multiCallprovider);
 
-        const [isRegisted, nftId, numUsers] = await Promise.all([
+        const [isRegisted, nftId, numUsers, mintFee] = await Promise.all([
           contract.isRegistered(uuid),
           contract.addressId(address),
           contract.numUsers(),
+          keyManagerContract.getMintFee(1)
         ]);
 
         setRegistered(isRegisted);
         setNFTId(+nftId.toString());
         setNumUsers(+numUsers.toString());
+        setMintFee(+formatEther(mintFee));
       } catch (e) {
         console.error("useFriendFi:useEffect()", e);
       }
@@ -129,7 +141,6 @@ export const useFriendFi = () => {
         chainId,
         etherProvider
       );
-      const fee = await contract.getMintFee(amount);
       const data = contract.interface.encodeFunctionData("batchMint", [
         address,
         amount,
@@ -137,10 +148,10 @@ export const useFriendFi = () => {
       return sendTransaction({
         to: contractAddress,
         data,
-        value: fee.toString(),
+        value: parseEther((mintFee * amount).toString()).toString(),
       });
     },
-    [address, chainId, etherProvider, sendTransaction]
+    [mintFee, address, chainId, etherProvider, sendTransaction]
   );
 
   const fetchFriendKeys = useCallback(async () => {
@@ -174,6 +185,79 @@ export const useFriendFi = () => {
     }
   }, [address, chainId]);
 
+  const fetchMintResult = useCallback(async (txHash: string) => {
+    const level = 0;
+    const contract = friendKeyContract.getContract(chainId, level, etherProvider);
+    const contractAddress = friendKeyContract.getAddress(chainId, level);
+    const tx = await etherProvider.getTransaction(txHash);
+    if (!tx || !tx.blockNumber) return null;
+
+    const offset = 15;
+    const currentBlock = await etherProvider.getBlockNumber();
+    const blockOffset = tx.blockNumber + offset > currentBlock ? currentBlock : tx.blockNumber + offset;
+
+    const logs = await etherProvider.getLogs({
+      address: contractAddress,
+      fromBlock: tx.blockNumber,
+      toBlock: blockOffset
+    });
+
+    const parsedLogs = logs.reduce((prev, log) => {
+      try {
+        const parsed = contract.interface.parseLog(log);
+        return parsed ? [...prev, parsed] : prev;
+      } catch (e) {
+        return prev;
+      }
+    }, [] as ethers.LogDescription[])
+      .filter(log => ['TransferSingle', 'TransferBatch'].includes(log.name))
+      .filter(log => log.args['from'] === ethers.ZeroAddress && log.args['to'] === address)
+
+    const result: MintedKey[] = parsedLogs.reduce((prev, log) => {
+      if (log.name === "TransferSingle") {
+        const data = {
+          id: +log.args[3].toString(),
+          value: +log.args[4].toString(),
+        }
+        prev = [...prev, data]
+      } else {
+        const ids = log.args[3];
+        const values = log.args[4]
+        const dataList = ids.map((id: any, index: any) => ({
+          id: +id.toString(),
+          value: +values[index].toString()
+        }))
+        prev = [...prev, ...dataList]
+      }
+
+      return prev;
+    }, [] as MintedKey[]);
+
+    return result;
+  }, [chainId, etherProvider, address]);
+
+  const waitForMintResult = useCallback((txHash: string) => {
+    return new Promise<MintedKey[]>((resolve, reject) => {
+      const start = new Date().valueOf();
+
+      const iv = setInterval(async () => {
+        const elapse = new Date().valueOf() - start;
+        const result = await fetchMintResult(txHash);
+
+        if (result && result.length > 0) {
+          clearInterval(iv);
+          return resolve(result);
+        }
+
+        if (elapse > TIMEOUT) {
+          clearInterval(iv);
+          return reject("Failed: Timeout");
+        }
+
+      }, INTERVAL);
+    })
+  }, [fetchMintResult]);
+
   const addMintListener = useCallback(
     (fn: MintListener) => {
       const id = Math.floor(Math.random() * 1000);
@@ -198,10 +282,13 @@ export const useFriendFi = () => {
     nftId,
     numUsers,
     friendKeys,
+    mintFee,
     fetchData,
     fetchFriendKeys,
     register,
     batchMint,
+    waitForMintResult,
+    fetchMintResult,
     addMintListener,
     removeMintListener,
   };
