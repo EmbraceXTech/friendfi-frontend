@@ -13,13 +13,19 @@ export default function Bottombar() {
         <div className="flex items-center space-x-12 select-none text-gray-800">
           {BOTTOM_MENU_ITEMS.map((item) => {
             const isActived =
-              item.path === "/" ? pathname === "/" : pathname.includes(item.path);
+              item.path === "/"
+                ? pathname === "/"
+                : pathname.includes(item.path);
             return (
-              <div
+              <button
                 onClick={() => router.push(item.path)}
                 key={item.path}
-                className={`flex flex-col items-center ${isActived ? "cursor-default" : "cursor-pointer hover:opacity-70"
-                  }`}
+                className={`flex flex-col items-center ${
+                  isActived || item.name === "Chat"
+                    ? "cursor-default"
+                    : "cursor-pointer hover:opacity-70"
+                } ${item.name === "Chat" ? "opacity-30" : ""}`}
+                disabled={item.name === "Chat"}
               >
                 <div className="w-6 h-6">
                   <item.icon strokeWidth={isActived ? 2.5 : 2} />
@@ -27,12 +33,11 @@ export default function Bottombar() {
                 <p className={`${isActived ? "font-semibold" : "font-normal"}`}>
                   {item.name}
                 </p>
-              </div>
+              </button>
             );
           })}
         </div>
       </div>
     </div>
-
   );
 }
