@@ -84,12 +84,15 @@ export function useFriendFi() {
     }, [chainId, uuid, token]);
 
     const batchMint = useCallback(async (amount: number) => {
-        const address = friendKeyManagerContract.getAddress(chainId);
+        if (!address) {
+            throw new Error("Invalid address");
+        }
+        const contractAddress = friendKeyManagerContract.getAddress(chainId);
         const contract = friendKeyManagerContract.getContract(chainId, etherProvider);
         const fee = await contract.getMintFee(amount);
         const data = contract.interface.encodeFunctionData("batchMint", [address, amount]);
         return sendTransaction({
-            to: address,
+            to: contractAddress,
             data,
             value: fee.toString()
         })
