@@ -6,7 +6,7 @@ import { PuffLoader } from "react-spinners";
 
 export default function Reigster() {
   const router = useRouter();
-  const { registered, register, fetching, isFetching } = useFriendFi();
+  const { registered, fetching, register, fetchData } = useFriendFi();
   const { disconnect } = useConnect();
 
   useEffect(() => {
@@ -16,12 +16,12 @@ export default function Reigster() {
   }, [registered, router]);
 
   useEffect(() => {
-    if (!registered && !isFetching) {
+    if (!registered && !fetching) {
       console.log("registered: ", registered);
       (async () => {
         try {
           await register();
-          await fetching();
+          await fetchData();
         } catch (e: any) {
           if (e.code === 4001 || e.code === 40104) {
             console.log("User rejected request");
@@ -31,7 +31,8 @@ export default function Reigster() {
         }
       })();
     }
-  }, [registered, router, isFetching]);
+  }, [registered, router, fetching, fetchData, register]);
+
   return (
     <div className="w-full h-screen flex justify-center items-center font-sans">
       <PuffLoader color="#FDE047" size={150} />
