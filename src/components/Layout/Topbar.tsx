@@ -63,7 +63,7 @@ export default function Topbar() {
       case "/friends":
         return (
           <div className="flex justify-between items-end pt-6">
-            <div />
+            {/* <div /> */}
             <h1 className="text-lg font-sans font-medium">Friends</h1>
             <div className="flex space-x-2">
               <Search />
@@ -74,7 +74,7 @@ export default function Topbar() {
       case "/market":
         return (
           <div className="flex justify-between items-end pt-6">
-            <div />
+            {/* <div /> */}
             <h1 className="text-lg font-sans font-medium">Marketplace</h1>
             <div className="flex space-x-2">
               <Search />
