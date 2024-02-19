@@ -29,15 +29,31 @@ export default function Home() {
 
   useEffect(() => {
     if (friendKeyWhiteList.length === 0) return;
+    const friendKeyWhiteListFilter = friendKeyWhiteList.filter(
+      (item) => item.uuid !== userInfo?.uuid
+    );
+    const highsetTierKey = Object.values(
+      friendKeyWhiteListFilter.reduce(
+        (acc: { [key: string]: { tier: number; uuid: string } }, item) => {
+          if (!acc[item.uuid] || acc[item.uuid].tier < parseInt(item.tier)) {
+            acc[item.uuid] = { tier: parseInt(item.tier), uuid: item.uuid };
+          }
+          return acc;
+        },
+        {}
+      )
+    );
+    const highsetTierKeys = highsetTierKey
+      .map((item) => {
+        return Array.from({ length: +item.tier + 1 }).map((_, i) => {
+          return { uuid: item.uuid, tier: i.toString() };
+        });
+      })
+      .flat();
     try {
       (async () => {
-        const friendKeyWhiteListFilter = friendKeyWhiteList.filter(
-          (item) => item.uuid !== userInfo?.uuid
-        );
         try {
-          const postsResponse = await backend.getPostWhiteList(
-            friendKeyWhiteListFilter
-          );
+          const postsResponse = await backend.getPostWhiteList(highsetTierKeys);
           const updatedPosts = await Promise.all(
             postsResponse?.data.data.map(async (post: any) => {
               const userResponse = await backend.getUser(post.uuid);

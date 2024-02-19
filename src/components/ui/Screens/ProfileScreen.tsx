@@ -42,7 +42,17 @@ export default function ProfileScreen({
     (async () => await fetchFriendKeys())();
   }, [fetchFriendKeys]);
 
-  console.log("friendKeyWhiteList", friendKeyWhiteList);
+  const keyTier = useMemo(() => {
+    const f = friendKeyWhiteList.filter(({ uuid }) => uuid === userInfo?.uuid);
+    const highestTier = f.reduce(
+      (acc: number, curr: { uuid: string; tier: string }) => {
+        if (+curr.tier > acc) return +curr.tier;
+        return acc;
+      },
+      -1
+    );
+    return highestTier;
+  }, [friendKeyWhiteList, userInfo?.uuid]);
 
   const keyAmount = useMemo(() => {
     const keys = [0, 0, 0];
@@ -110,14 +120,19 @@ export default function ProfileScreen({
         <div />
       )}
       <div className="text-secondary mt-3">
-        Joined {userInfo && formatDateString(userInfo?.created_at || "")}
+        Joined
+        {userInfo &&
+          userInfo.created_at &&
+          formatDateString(userInfo?.created_at || "")}
       </div>
-      <span className="mt-1 text-secondary">
-        <span className="text-black">{keyAmount[0]}</span> Common{" "}
-        <span className="text-black">{keyAmount[1]}</span> Close{" "}
-        <span className="text-black">{keyAmount[2]}</span> Best
-      </span>
-      <MenuTab name={userInfo?.name || ""} uuid={userInfo?.uuid || ""} />
+      {mode === "me" && (
+        <span className="mt-1 text-secondary">
+          <span className="text-black">{keyAmount[0]}</span> Common{" "}
+          <span className="text-black">{keyAmount[1]}</span> Close{" "}
+          <span className="text-black">{keyAmount[2]}</span> Best
+        </span>
+      )}
+      <MenuTab name={userInfo?.name || ""} uuid={userInfo?.uuid || ""} highestTier={keyTier} />
       {mode === "me" && isOpen && setIsOpen && (
         <MoreSheet isOpenForce={isOpen} setIsOpenForce={setIsOpen} />
       )}

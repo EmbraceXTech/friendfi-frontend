@@ -3,13 +3,16 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PostItem from "../Post/PostItem";
 import { backend } from "@/services/backend";
+import { useFriendFi } from "@/hooks/useFriendFi";
 
 export default function MenuTab({
   uuid,
   name,
+  highestTier = 2,
 }: {
   name: string;
   uuid: string;
+  highestTier?: number;
 }) {
   const [currentTab, setCurrentTab] = useState<"post" | "statistics">("post");
   const [posts, setPosts] = useState([]);
@@ -17,7 +20,10 @@ export default function MenuTab({
     try {
       (async () => {
         try {
-          const postsResponse = await backend.getPost(uuid);
+          const whitelist = Array.from({ length: highestTier + 1 }).map((_, i) => {
+            return { uuid, tier: i.toString() };
+          });
+          const postsResponse = await backend.getPostWhiteList(whitelist);
           console.log(postsResponse);
           const _posts = postsResponse?.data.data.map((post: any) => {
             return {
@@ -37,7 +43,7 @@ export default function MenuTab({
     } catch (e) {
       console.error(e);
     }
-  }, [name, uuid]);
+  }, [highestTier, name, uuid]);
   return (
     <div className="pt-7 font-sans">
       <Tabs
