@@ -13,7 +13,12 @@ interface FriendCardProps {
 
 export default function FriendCard({ name, subName, keys }: FriendCardProps) {
   const KeyItems = useCallback((type: string, amount: number) => {
-    return <div className="font-medium">{amount}</div>;
+    return (
+      <div>
+        <div className="font-medium">{amount}</div>
+        <div className="text-tertiary text-xs">{type}</div>
+      </div>
+    );
   }, []);
 
   return (

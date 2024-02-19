@@ -1,3 +1,5 @@
+import NewUser from "@/components/Icon/NewUser";
+import { FFButton } from "@/components/ui/FFButton";
 import { Button } from "@/components/ui/button";
 import { useFriendFi } from "@/hooks/useFriendFi";
 import { backend } from "@/services/backend";
@@ -79,27 +81,55 @@ export default function Reigster() {
 
   if (!registering) {
     return (
-      <div className="w-full h-screen flex flex-col justify-center items-center font-sans">
-        <div>Oh, You&apos;re new here.</div>
-        <div>Please complete the registration.</div>
-        <div>Make sure you top up some gas to your wallet.</div>
-        <div>(check your wallet on the buttom right corner)</div>
-
-        <Button onClick={handleRegister}>Register</Button>
-        <Button onClick={disconnect}>Cancel</Button>
+      <div className="w-full h-screen flex flex-col justify-between items-center font-sans py-6">
+        <div />
+        <div className="text-center flex flex-col items-center text-sm text-secondary">
+          <NewUser />
+          <div className="font-semibold text-xl text-black">
+            You&apos;re new here!
+          </div>
+          <div className="text-sm">Please complete the registration.</div>
+          <div className="text-sm">
+            Make sure you top up some gas to your wallet.
+          </div>
+          <div className="text-sm">
+            Check your wallet on the buttom right corner.
+          </div>
+        </div>
+        <div className="flex flex-col space-y-3 w-full">
+          <FFButton onClick={handleRegister} className="w-full">
+            Register
+          </FFButton>
+          <FFButton
+            onClick={disconnect}
+            className="w-full text-tertiary"
+            inside="bg-white"
+            outside="bg-[#EFEFEF] border-[#EFEFEF]"
+          >
+            Cancel
+          </FFButton>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-screen flex flex-col justify-center items-center font-sans text-center">
-      <PuffLoader color="#FDE047" size={150} />
-      <div>The process will take around 1 minute.</div>
-      <div>
-        Once it&apos;s done, you will be automatically directed into the new
-        world.
+    <div className="w-full h-screen flex flex-col justify-between items-center font-sans text-center py-6">
+      <div />
+      <div className="flex flex-col items-center space-y-3">
+        <PuffLoader color="#FDE047" size={150} />
+        <div className="text-xl font-semibold">Register Processing</div>
+        <div className="text-center text-sm text-secondary">
+          <div>The process will take around 1 minute.</div>
+          <div>
+            Once it&apos;s done, you will be automatically directed into the new
+            world.
+          </div>
+        </div>
       </div>
-      <div>Feel free to grab some water. It should be finishe by then...</div>
+      <div className="text-secondary text-xs">
+        Feel free to grab some water. It should be finishe by then...
+      </div>
     </div>
   );
 }

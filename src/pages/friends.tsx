@@ -22,18 +22,14 @@ export default function Friends() {
   const { mintFee, friendKeys, batchMint, fetchFriendKeys, waitForMintResult } =
     useFriendFi();
 
-  console.log(friendKeys);
-  const { address } = useEthereum();
-  console.log(address);
-
   const friendList = useMemo(() => {
     return friendKeys.map((friendKey) => ({
       name: friendKey.name,
-      subName: friendKey.name,
+      subName: "",
       keys: {
-        common: friendKey.balance,
-        close: 0,
-        best: 0,
+        common: +(friendKey.tier.find((t) => t.level === "0")?.balance || 0),
+        close: +(friendKey.tier.find((t) => t.level === "1")?.balance || 0),
+        best: +(friendKey.tier.find((t) => t.level === "2")?.balance || 0),
       },
     }));
   }, [friendKeys]);
