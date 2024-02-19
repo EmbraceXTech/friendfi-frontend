@@ -20,6 +20,8 @@ export default function Topbar() {
           <div className="flex justify-between items-center pt-6">
             <div className="flex space-x-2">
               <Image
+                className="cursor-pointer"
+                onClick={() => router.push("/")}
                 src="/logo.svg"
                 width={28}
                 height={28}
@@ -87,8 +89,18 @@ export default function Topbar() {
       case "search":
         return (
           <div className="flex justify-between items-center pt-6">
-            {/* <div /> */}
-            <h1 className="text-lg font-sans font-medium">Search</h1>
+            <div className="flex items-center space-x-3">
+              <Image
+                className="cursor-pointer"
+                onClick={() => router.push("/")}
+                src="/logo.svg"
+                width={28}
+                height={28}
+                alt="friendfi logo"
+              />
+              <h1 className="text-lg font-sans font-medium">Search</h1>
+            </div>
+
             <div className="flex space-x-2">
               <Search />
               <Notification />
