@@ -156,7 +156,7 @@ export const useFriendFi = () => {
       );
       const resID = await Promise.all(
         filterResp.map(async (item) => {
-          let level;
+          let level: any;
           switch (item.contract_address) {
             case contractAddress0:
               level = 0;
@@ -316,12 +316,15 @@ export const useFriendFi = () => {
     [fetchMintResult]
   );
 
-  const fetchUUIDbyTokenId = useCallback(async (id: string) => {
-    const uuid = await userManagerContract
-      .getContract(chainId, etherProvider)
-      .uuids(id);
-    return uuid;
-  }, [chainId, etherProvider]);
+  const fetchUUIDbyTokenId = useCallback(
+    async (id: string) => {
+      const uuid = await userManagerContract
+        .getContract(chainId, etherProvider)
+        .uuids(id);
+      return uuid;
+    },
+    [chainId, etherProvider]
+  );
 
   return {
     fetching,
