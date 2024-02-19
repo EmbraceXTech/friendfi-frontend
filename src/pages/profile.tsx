@@ -7,7 +7,7 @@ import { Facebook, Google, X } from "@/components/Icon/Social";
 import ProfileScreen from "@/components/ui/Screens/ProfileScreen";
 import { backend } from "@/services/backend";
 
-export default function Menu() {
+export default function Profile() {
   const { userInfo } = useAuthCore();
   const [isOpenMore, setIsOpenMore] = useState(false);
 

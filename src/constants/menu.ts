@@ -1,4 +1,10 @@
-import { HomeIcon, MenuIcon, ShoppingBag, UsersIcon, MessageSquareIcon } from "lucide-react";
+import {
+  UsersIcon,
+  HomeIcon,
+  ShoppingBag,
+  UserIcon,
+  MessageSquareIcon,
+} from "lucide-react";
 
 export const BOTTOM_MENU_ITEMS = [
   {
@@ -22,8 +28,8 @@ export const BOTTOM_MENU_ITEMS = [
     path: "/market",
   },
   {
-    name: "Menu",
-    icon: MenuIcon,
-    path: "/menu",
+    name: "Profile",
+    icon: UserIcon,
+    path: "/profile",
   },
 ];
