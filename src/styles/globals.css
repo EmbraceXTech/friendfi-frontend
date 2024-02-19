@@ -5,3 +5,19 @@
 html {
   font-family: var(--font-sans) !important;
 }
+
+/* For Webkit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 0; /* Hide scrollbar */
+}
+
+/* For Firefox */
+body {
+  scrollbar-width: thin; /* "thin" or "auto" */
+  scrollbar-color: transparent transparent; /* track color and thumb color */
+}
+
+/* For Microsoft Edge */
+body::-ms-scrollbar {
+  display: none;
+}
