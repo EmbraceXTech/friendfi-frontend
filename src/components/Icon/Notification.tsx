@@ -1,6 +1,7 @@
 const Notification = () => {
   return (
     <svg
+      className=" cursor-not-allowed opacity-50"
       width="40"
       height="40"
       viewBox="0 0 40 40"

@@ -13,9 +13,9 @@ export default function Bottombar() {
         <div className="flex items-center space-x-12 select-none text-gray-800">
           {BOTTOM_MENU_ITEMS.map((item) => {
             const isActived =
-              item.path === "/"
+              item.path === "/" || pathname?.includes("search")
                 ? pathname === "/"
-                : pathname.includes(item.path);
+                : pathname?.includes(item.path);
             return (
               <button
                 onClick={() => router.push(item.path)}

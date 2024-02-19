@@ -1,21 +1,50 @@
+import { useRouter } from "next/router";
+import { useState } from "react";
+
 const Search = () => {
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+
+  const handleSearch = () => {
+    router.push(`/search/${search}`);
+  };
+
   return (
-    <svg
-      width="40"
-      height="40"
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearch();
+      }}
+      className="relative"
     >
-      <circle cx="20" cy="20" r="20" fill="#F1F2F4" />
-      <path
-        d="M28.25 28.25L23.4861 23.4861M23.4861 23.4861C24.7754 22.1968 25.4998 20.448 25.4998 18.6246C25.4998 16.8012 24.7754 15.0524 23.4861 13.763C22.1967 12.4737 20.448 11.7493 18.6245 11.7493C16.8011 11.7493 15.0523 12.4737 13.763 13.763C12.4736 15.0524 11.7493 16.8012 11.7493 18.6246C11.7493 20.448 12.4736 22.1968 13.763 23.4861C15.0523 24.7755 16.8011 25.4998 18.6245 25.4998C20.448 25.4998 22.1967 24.7755 23.4861 23.4861Z"
-        stroke="#656D78"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+      <input
+        required
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        type="text"
+        placeholder="Search for a friends.."
+        className="rounded-3xl border bg-gray-100 border-gray-100 px-5 pr-[44px] py-2 focus:outline-none focus:border-yellow-500"
       />
-    </svg>
+      <div
+        onClick={handleSearch}
+        className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 text-gray-500"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M21 21l-6-6m-1.414-1.414a7.5 7.5 0 1 1-10.586-10.586 7.5 7.5 0 0 1 10.586 10.586z"
+          />
+        </svg>
+      </div>
+    </form>
   );
 };
 

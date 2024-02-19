@@ -91,7 +91,7 @@ export default function Friends() {
               )} */}
             </div>
           </TabsTrigger>
-          <TabsTrigger value="listFriends">List Friends</TabsTrigger>
+          <TabsTrigger value="listFriends">My Friends</TabsTrigger>
         </TabsList>
         <hr />
         <TabsContent

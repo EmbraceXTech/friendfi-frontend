@@ -11,11 +11,13 @@ export default function Topbar() {
   const {} = useFriendFi();
   const router = useRouter();
 
+  const parsePathName = pathname?.split("/")[1];
+
   const Header = useMemo(() => {
-    switch (pathname) {
-      case "/":
+    switch (parsePathName) {
+      case "":
         return (
-          <div className="flex justify-between items-end pt-6">
+          <div className="flex justify-between items-center pt-6">
             <div className="flex space-x-2">
               <Image
                 src="/logo.svg"
@@ -32,11 +34,11 @@ export default function Topbar() {
             </div>
           </div>
         );
-      case "/friend":
+      case "friend":
         // TODO: not found
         if (!router.query.id)
           return (
-            <div className="flex justify-between items-end pt-6">
+            <div className="flex justify-between items-center pt-6">
               <div className="flex space-x-2">
                 <Image
                   src="/logo.svg"
@@ -60,9 +62,9 @@ export default function Topbar() {
       // <Notification />
       //   </div>
       // );
-      case "/friends":
+      case "friends":
         return (
-          <div className="flex justify-between items-end pt-6">
+          <div className="flex justify-between items-center pt-6">
             {/* <div /> */}
             <h1 className="text-lg font-sans font-medium">Friends</h1>
             <div className="flex space-x-2">
@@ -71,11 +73,22 @@ export default function Topbar() {
             </div>
           </div>
         );
-      case "/market":
+      case "market":
         return (
-          <div className="flex justify-between items-end pt-6">
+          <div className="flex justify-between items-center pt-6">
             {/* <div /> */}
             <h1 className="text-lg font-sans font-medium">Marketplace</h1>
+            <div className="flex space-x-2">
+              <Search />
+              <Notification />
+            </div>
+          </div>
+        );
+      case "search":
+        return (
+          <div className="flex justify-between items-center pt-6">
+            {/* <div /> */}
+            <h1 className="text-lg font-sans font-medium">Search</h1>
             <div className="flex space-x-2">
               <Search />
               <Notification />
@@ -106,7 +119,7 @@ export default function Topbar() {
       default:
         return;
     }
-  }, [pathname, router.query.id]);
+  }, [pathname, router.query.id, parsePathName]);
 
   return <div className="w-full">{Header}</div>;
 }
