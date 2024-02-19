@@ -19,6 +19,7 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import FriendFoundCard from "./FriendFoundCard";
+import { useRouter } from "next/router";
 
 export default function RandomSuccessSheet({
   isOpenForce = false,
@@ -27,6 +28,7 @@ export default function RandomSuccessSheet({
 }) {
   const [isOpen, setIsOpen] = useState(isOpenForce);
   const { width, height } = useWindowSize();
+  const router = useRouter();
 
   // Mock
   const foundFriends = [
@@ -88,7 +90,10 @@ export default function RandomSuccessSheet({
             <div className="w-full">
               <FFButton
                 className="font-serif w-full"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  router.reload();
+                }}
               >
                 Find More friend
               </FFButton>
