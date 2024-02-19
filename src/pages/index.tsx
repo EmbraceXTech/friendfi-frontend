@@ -48,7 +48,7 @@ export default function Home() {
   }, []);
   if (isLayoutLoading) return <></>;
   return (
-    <div className="text-center text-sm font-sans flex flex-col mt-7 w-full">
+    <div className="text-center text-sm font-sans flex flex-col mt-7 w-full pb-[120px]">
       <MyPostBar />
       {postList.length > 0 ? (
         postList.map((post, key) => {

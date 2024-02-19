@@ -68,7 +68,7 @@ export default function TestScreen() {
     <div className="h-full w-full flex flex-col pt-[100px] pb-[80px]">
       {/* Account info */}
       <h1 className="text-lg mt-6 font-bold">Account Info</h1>
-      <div>You're logged in as {name}</div>
+      <div>You&apos;re logged in as {name}</div>
       <div>Your wallet address is {address}</div>
       <div>Your UUID is {uuid}</div>
       <div>Your token is {token}</div>
@@ -86,7 +86,7 @@ export default function TestScreen() {
       <h1 className="text-lg mt-6 font-bold">Register</h1>
       {!registered ? (
         <div>
-          <div>You haven't registered</div>
+          <div>You haven&apos;t registered</div>
           <div>
             <Button onClick={register}>Register</Button>
           </div>
