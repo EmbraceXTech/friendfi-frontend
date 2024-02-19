@@ -54,10 +54,20 @@ const getPost = async (uuid: string) => {
 
 }
 
+const getPostWhiteList = async (whitelist: { uuid: string; tier: string; }[]) => {
+  try {
+    const res = await axios.post(`/api/posts/whitelists`, { whitelist });
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export const backend = {
   register,
   getUser,
   createPost,
   getPosts,
   getPost,
+  getPostWhiteList,
 };

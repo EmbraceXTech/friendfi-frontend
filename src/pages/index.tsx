@@ -1,8 +1,10 @@
 import MyPostBar from "@/components/Post/MyPostBar";
 import PostItem from "@/components/Post/PostItem";
 import { FFButton } from "@/components/ui/FFButton";
+import { useFriendFi } from "@/hooks/useFriendFi";
 import { useHydrationFix } from "@/hooks/useHydrationFix";
 import { backend } from "@/services/backend";
+import { useAuthCore } from "@particle-network/auth-core-modal";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 
@@ -19,11 +21,23 @@ export default function Home() {
       uuid: string;
     }[]
   >([]);
+  const { userInfo } = useAuthCore();
+  const { fetchFriendKeys, friendKeyWhiteList } = useFriendFi();
   useEffect(() => {
+    fetchFriendKeys();
+  }, [fetchFriendKeys]);
+
+  useEffect(() => {
+    if (friendKeyWhiteList.length === 0) return;
     try {
       (async () => {
+        const friendKeyWhiteListFilter = friendKeyWhiteList.filter(
+          (item) => item.uuid !== userInfo?.uuid
+        );
         try {
-          const postsResponse = await backend.getPosts();
+          const postsResponse = await backend.getPostWhiteList(
+            friendKeyWhiteListFilter
+          );
           const updatedPosts = await Promise.all(
             postsResponse?.data.data.map(async (post: any) => {
               const userResponse = await backend.getUser(post.uuid);
@@ -45,7 +59,7 @@ export default function Home() {
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [friendKeyWhiteList, userInfo?.uuid]);
   if (isLayoutLoading) return <></>;
   return (
     <div className="text-center text-sm font-sans flex flex-col mt-7 w-full pb-[120px]">

@@ -46,6 +46,14 @@ export const useFriendFi = () => {
   const token = userInfo ? userInfo.token : "";
   const chainId = chainInfo.id;
 
+  const friendKeyWhiteList = useMemo(() => {
+    return friendKeys.map((item) => {
+      return item.tier.map((item2) => {
+        return { uuid: item.uuid, tier: item2.level };
+      });
+    }).flat();
+  }, [friendKeys]);
+
   const etherProvider = useMemo(
     () => new ethers.JsonRpcProvider(chainInfo.rpcUrl),
     [chainInfo]
@@ -312,6 +320,7 @@ export const useFriendFi = () => {
     nftId,
     numUsers,
     friendKeys,
+    friendKeyWhiteList,
     mintFee,
     fetchData,
     fetchFriendKeys,
