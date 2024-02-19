@@ -259,7 +259,7 @@ export const useFriendFi = () => {
       });
       const resID = await Promise.all(
         newFilterResp.map(async (item) => {
-          let level;
+          let level: any;
           switch (item.contract_address) {
             case contractAddress0:
               level = 0;
