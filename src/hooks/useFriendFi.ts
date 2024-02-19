@@ -47,13 +47,71 @@ export const useFriendFi = () => {
   const chainId = chainInfo.id;
 
   const friendKeyWhiteList = useMemo(() => {
-    return friendKeys
-      .map((item) => {
-        return item.tier.map((item2) => {
-          return { uuid: item.uuid, tier: item2.level };
-        });
-      })
-      .flat();
+    let _friendKeys: { uuid: string; tier: string; contractAddress: string }[] =
+      [];
+
+    friendKeys.forEach((item) => {
+      item.tier.forEach((item2) => {
+        if (_friendKeys.length === 0)
+          _friendKeys.push({
+            uuid: item.uuid,
+            tier: item2.level,
+            contractAddress: item2.contractAddress,
+          });
+        else {
+          const have = _friendKeys.find(
+            (item3) =>
+              item3.contractAddress === item2.contractAddress &&
+              item3.uuid === item.uuid
+          );
+          if (!have) {
+            _friendKeys.push({
+              uuid: item.uuid,
+              tier: item2.level,
+              contractAddress: item2.contractAddress,
+            });
+          }
+        }
+      });
+    });
+
+    return _friendKeys.map((item) => ({ uuid: item.uuid, tier: item.tier }));
+  }, [friendKeys]);
+
+  const friendKeyWhiteListHolding = useMemo(() => {
+    let _friendKeys: { uuid: string; tier: string; contractAddress: string }[] =
+      [];
+
+    friendKeys.forEach((item) => {
+      item.tier.forEach((item2) => {
+        if (_friendKeys.length === 0) {
+          Array.from({ length: +item2.balance }).forEach(() => {
+            _friendKeys.push({
+              uuid: item.uuid,
+              tier: item2.level,
+              contractAddress: item2.contractAddress,
+            });
+          });
+        } else {
+          const have = _friendKeys.find(
+            (item3) =>
+              item3.contractAddress === item2.contractAddress &&
+              item3.uuid === item.uuid
+          );
+          if (!have) {
+            Array.from({ length: +item2.balance }).forEach(() => {
+              _friendKeys.push({
+                uuid: item.uuid,
+                tier: item2.level,
+                contractAddress: item2.contractAddress,
+              });
+            });
+          }
+        }
+      });
+    });
+
+    return _friendKeys.map((item) => ({ uuid: item.uuid, tier: item.tier }));
   }, [friendKeys]);
 
   const etherProvider = useMemo(
@@ -403,6 +461,7 @@ export const useFriendFi = () => {
     numUsers,
     friendKeys,
     friendKeyWhiteList,
+    friendKeyWhiteListHolding,
     mintFee,
     fetchData,
     fetchFriendKeys,

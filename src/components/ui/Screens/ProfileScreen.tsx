@@ -35,6 +35,7 @@ export default function ProfileScreen({
   const {
     fetchFriendKeys,
     friendKeyWhiteList,
+    friendKeyWhiteListHolding,
     friendKeys,
     fetchAddressByUUID,
     fetchIdByAddress,
@@ -66,15 +67,16 @@ export default function ProfileScreen({
   }, [friendKeyWhiteList, userInfo?.uuid]);
 
   const keyAmount = useMemo(() => {
+    console.log("friendKeyWhiteListHolding", friendKeyWhiteListHolding);
     const keys = [0, 0, 0];
-    if (!friendKeyWhiteList || friendKeyWhiteList.length === 0) return keys;
-    friendKeyWhiteList.forEach((item) => {
+    if (!friendKeyWhiteListHolding || friendKeyWhiteListHolding.length === 0) return keys;
+    friendKeyWhiteListHolding.forEach((item) => {
       if (+item.tier === 0) keys[0]++;
       if (+item.tier === 1) keys[1]++;
       if (+item.tier === 2) keys[2]++;
     });
     return keys;
-  }, [friendKeyWhiteList]);
+  }, [friendKeyWhiteListHolding]);
 
   const friendInfo = useMemo(() => {
     return friendKeys.find((item) => item.uuid === userInfo?.uuid);
