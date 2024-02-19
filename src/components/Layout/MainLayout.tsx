@@ -14,7 +14,7 @@ export default function MainLayout({
     <div className={`h-full max-w-[500px] mx-auto relative`}>
       <ParticleProvider>
         <AuthProvider>
-          <div className="overflow-scroll min-h-full">
+          <div className="overflow-scroll min-h-full px-2">
             {children}
             {path !== "/login" && path !== "/register" && <Bottombar />}
           </div>

@@ -13,7 +13,7 @@ export default function Login() {
     <div className="h-full w-full flex flex-col pt-[100px] pb-[80px] font-sans">
       <div className="flex flex-col items-center">
         <Image src="/logo.svg" width={90} height={90} alt="friendfi logo" />
-        <p className="font-bold text-3xl mt-[30px]">The future of Social</p>
+        <p className="font-bold text-3xl mt-[30px]">Fi your Friend</p>
         <p className="px-[100px] text-center mt-[5px] text-sm text-gray-500">
           You’ll use ETH on mainnet to buy and sell passes on FriendFi
         </p>

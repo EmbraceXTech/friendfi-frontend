@@ -9,8 +9,8 @@ export default function Bottombar() {
 
   return (
     <div className="flex justify-center fixed bottom-0 z-10 font-sans">
-      <div className="flex justify-center border p-3 px-10 mb-5 rounded-full shadow-sm w-full bg-white ">
-        <div className="flex items-center space-x-12 select-none text-gray-800">
+      <div className="flex justify-center border p-3 px-4 md:px-10 mb-5 rounded-full shadow-sm w-full bg-white ">
+        <div className="flex items-center space-x-8 md:space-x-12 select-none text-gray-800">
           {BOTTOM_MENU_ITEMS.map((item) => {
             const isActived =
               item.path === "/" || pathname?.includes("search")
