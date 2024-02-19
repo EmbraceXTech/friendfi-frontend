@@ -51,19 +51,30 @@ const getPost = async (uuid: string) => {
   } catch (e) {
     console.error(e);
   }
+};
 
-}
-
-const getPostWhiteList = async (whitelist: { uuid: string; tier: string; }[]) => {
+const getPostWhiteList = async (
+  whitelist: { uuid: string; tier: string }[]
+) => {
   try {
     const res = await axios.post(`/api/posts/whitelists`, { whitelist });
     return res;
   } catch (e) {
     console.error(e);
   }
-}
+};
+
+const searchUser = async (name: string) => {
+  try {
+    const res = await axios.get(`/api/users/search/${name}`);
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
+};
 
 export const backend = {
+  searchUser,
   register,
   getUser,
   createPost,

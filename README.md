@@ -1,40 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## FriendFi
+**FriendFi is a social media with DeFi power. It enables people to reach out each other using financial mechanism relying on smart contract.**
 
-## Getting Started
+<img src="./public/logo-friendfi.png" width="200" />
 
-First, run the development server:
+FriendFi is a social media with DeFi power. It enables people to reach out each other using financial mechanism relying on smart contract. Users randomly discover new friends, unlock their exclusive contents, and trade upon those friend connection (in form of tokens). The platform gamifies the global connection and interaction, making social media more exciting.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## System Architecture
+<img src="./public/flow-friendfi.png" width="600" />
+
+FriendFi ecosystem comprises several components as follows:
+
+1. Particle Auth - FriendFi system utilizes Particle Auth, a third party authentication service, to simplify authentication process using the familiarized social logins (e.g., Google, Facebook, X) and generate corresponding wallet address. Particle Auth maps user id and wallet address on their system. This can be used to identify the connection between wallet address and social medias on chain.
+2. FriendKeyContract - The core smart contract of the ecosystem. It is used to handle on-chain registration and FriendKey (ERC1155) management (e.g., minting, burning, and merging). A FriendKey determines the connection between users. For example, if Alice holds a FriendKey of BoB, she has a connection to BoB. This connection can be used in many forms of social interaction. This platform uses that connection as a key to access the content of the specific user. A FriendKey can only be generated randomly. This means that users must randomly mint a FriendKey from FriendKeyContract to get access to a user’s content. Alternatively, he can buy it from other users.
+3. Chainlink Functions - Since the wallet address and social media connection are stored off chain for privacy preservation, the data must be fetched from off chain to the smart contract. Chainlink Functions is used to make this process secure by relying on decentralized oracle network rather than a single server.
+4. Chainlink VRF - The system relies on the verifiable random function (VRF) powered by chainlink decentralized oracle network. This mechanism protects the random function attack. The system provides the fair random function for every type of users.
+5. FriendFi Content Registry - This is an example of user interaction upon FriendFi ecosystem, where the access control is governed by FriendKey. While the interaction layer should be decentralized, we make a centralized version for simplicity of this demo. Users can post their content to the content registry. Other users who own a key of the authors can access and interact with their content. The content can be set into 3 friend levels: common, close, best. In order to access higher level of content, users must level up their FriendKey by merging 3 keys in a lower level.
+
+## Usage
+
+### Installation
+```shell
+$ npm i
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Start development server
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```shell
+$ npm run dev
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Build
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```shell
+$ npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Start production server
 
-## Learn More
+```shell
+$ npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Links
+- [Contract Repo](https://github.com/EmbraceXTech/friendfi-contract)
