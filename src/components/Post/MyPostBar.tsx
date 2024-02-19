@@ -23,7 +23,6 @@ export default function MyPostBar() {
   const [tier, setTier] = useState("0");
 
   const router = useRouter();
-  console.log(userInfo);
 
   const name = useMemo(() => {
     return userInfo?.thirdparty_user_info?.user_info
