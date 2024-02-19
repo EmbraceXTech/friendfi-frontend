@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { IconName } from "../ui/iconName";
+import { useRouter } from "next/router";
 
 interface FriendCardProps {
   name: string;
@@ -9,9 +10,10 @@ interface FriendCardProps {
     close: number;
     best: number;
   };
+  uuid: string;
 }
 
-export default function FriendCard({ name, subName, keys }: FriendCardProps) {
+export default function FriendCard({ name, subName, keys, uuid }: FriendCardProps) {
   const KeyItems = useCallback((type: string, amount: number) => {
     return (
       <div>
@@ -20,9 +22,10 @@ export default function FriendCard({ name, subName, keys }: FriendCardProps) {
       </div>
     );
   }, []);
+  const router = useRouter();
 
   return (
-    <div className="flex justify-between w-full border rounded-xl py-3 px-5 items-center">
+    <div className="flex justify-between w-full border rounded-xl py-3 px-5 items-center cursor-pointer" onClick={() => router.push(`/friend?id=${uuid}`)}>
       <div className="flex space-x-3 items-center">
         <IconName name={name} />
         <div className="text-start">

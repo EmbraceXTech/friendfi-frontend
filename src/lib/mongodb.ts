@@ -23,14 +23,19 @@ export async function mongo() {
   }
 
   let client = new MongoClient(MONGODB_URI);
-  await client.connect();
-  let db = client.db(MONGODB_DB);
+  try {
+    await client.connect();
+    let db = client.db(MONGODB_DB);
 
-  cachedClient = client;
-  cachedDb = db;
+    cachedClient = client;
+    cachedDb = db;
 
-  return {
-    client: cachedClient,
-    db: cachedDb,
-  };
+    return {
+      client: cachedClient,
+      db: cachedDb,
+    };
+  } catch (e) {
+    await client.close();
+    throw e;
+  }
 }

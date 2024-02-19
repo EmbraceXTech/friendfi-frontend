@@ -32,10 +32,21 @@ export default function ProfileScreen({
   const [mergeStateSheet, setMergeStateSheet] = React.useState<
     "merge" | "complete"
   >("merge");
-  const { fetchFriendKeys, friendKeyWhiteList } = useFriendFi();
-  const handleMerge = () => {
+  const {
+    fetchFriendKeys,
+    friendKeyWhiteList,
+    friendKeys,
+    fetchAddressByUUID,
+    fetchIdByAddress,
+    merge,
+  } = useFriendFi();
+  const handleMerge = async (level: string) => {
+    const address = await fetchAddressByUUID(userInfo?.uuid || "");
+    const id = await fetchIdByAddress(address);
+    console.log("id", id.toString(), "level:", level);
+    const tx_hash = await merge(id.toString(), level);
+    console.log("merge: tx_hash", tx_hash);
     setMergeStateSheet("complete");
-    console.log("merge");
   };
 
   useEffect(() => {
@@ -64,6 +75,10 @@ export default function ProfileScreen({
     });
     return keys;
   }, [friendKeyWhiteList]);
+
+  const friendInfo = useMemo(() => {
+    return friendKeys.find((item) => item.uuid === userInfo?.uuid);
+  }, [friendKeys, userInfo?.uuid]);
 
   if (name === "") return <></>;
 
@@ -132,7 +147,11 @@ export default function ProfileScreen({
           <span className="text-black">{keyAmount[2]}</span> Best
         </span>
       )}
-      <MenuTab name={userInfo?.name || ""} uuid={userInfo?.uuid || ""} highestTier={keyTier} />
+      <MenuTab
+        name={userInfo?.name || ""}
+        uuid={userInfo?.uuid || ""}
+        highestTier={keyTier}
+      />
       {mode === "me" && isOpen && setIsOpen && (
         <MoreSheet isOpenForce={isOpen} setIsOpenForce={setIsOpen} />
       )}
@@ -143,6 +162,7 @@ export default function ProfileScreen({
           data={{ name, subName: "" }}
           onMerge={handleMerge}
           state={mergeStateSheet}
+          friendInfo={friendInfo}
         />
       )}
     </div>

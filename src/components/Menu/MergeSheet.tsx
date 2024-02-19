@@ -14,6 +14,13 @@ import {
 } from "@particle-network/auth-core-modal";
 import { useRouter } from "next/router";
 import useWindowSize from "react-use/lib/useWindowSize";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { FFButton } from "../ui/FFButton";
 import {
@@ -32,12 +39,27 @@ import Check from "../Icon/Check";
 import { truncateString } from "@/utils/string.util";
 import { cn } from "@/lib/utils";
 
+type FriendKey = {
+  uuid: string;
+  tokenId: number;
+  tokenUri: string;
+  name: string;
+  description: string;
+  asset_url: string;
+  tier: {
+    contractAddress: string;
+    level: string;
+    balance: string;
+  }[];
+};
+
 export default function MergeSheet({
   data,
   isOpenForce = false,
   setIsOpenForce,
   state,
   onMerge,
+  friendInfo,
 }: {
   data: {
     name: string;
@@ -46,19 +68,44 @@ export default function MergeSheet({
   isOpenForce: boolean;
   setIsOpenForce: Dispatch<SetStateAction<boolean>>;
   state: "merge" | "complete";
-  onMerge?: () => void;
+  onMerge?: (level: string) => void;
+  friendInfo?: FriendKey;
 }) {
-  const router = useRouter();
-  const { disconnect } = useConnect();
-  const { chainInfo, address } = useEthereum();
-  const { userInfo } = useAuthCore();
   const { width, height } = useWindowSize();
+  const router = useRouter();
 
   const [tierUsed, setTierUsed] = useState(0);
 
-  const amount = 2;
-
-  console.log(userInfo);
+  const [TierAmount, amount] = useMemo(() => {
+    const TierAmount = [0, 0, 0];
+    if (!friendInfo) return [TierAmount, 0];
+    const tier = friendInfo.tier.reduce(
+      (
+        acc: {
+          contractAddress: string;
+          level: string;
+          balance: string;
+        }[],
+        cur
+      ) => {
+        const found = acc.some(
+          (obj) =>
+            Object.values(obj).toString() === Object.values(cur).toString()
+        );
+        if (!found) {
+          acc.push(cur);
+        }
+        return acc;
+      },
+      []
+    );
+    tier.forEach((item) => {
+      if (+item.level === 0) TierAmount[0] += +item.balance;
+      if (+item.level === 1) TierAmount[1] += +item.balance;
+      if (+item.level === 2) TierAmount[2] += +item.balance;
+    });
+    return [TierAmount, TierAmount[tierUsed]];
+  }, [friendInfo, tierUsed]);
 
   const Tier = useCallback((tier: number) => {
     switch (tier) {
@@ -90,7 +137,7 @@ export default function MergeSheet({
       case "merge":
         return (
           <>
-            <div className="flex flex-col justify-center items-center w-full">
+            <div className="flex flex-col justify-center items-center w-full mb-20">
               <div className="w-1/3">
                 <FriendFoundCard
                   name={data.name}
@@ -126,8 +173,29 @@ export default function MergeSheet({
                 ))}
               </div>
             </div>
-            <FFButton className="w-full mt-20" onClick={onMerge}>
-              Merge Now
+            <div className="text-center text-lg">
+              {TierAmount[2]} Best {TierAmount[1]} Close {TierAmount[0]} Common
+            </div>
+            <div className="w-full flex justify-center">
+              <Select
+                value={tierUsed.toString()}
+                onValueChange={(value) => setTierUsed(+value)}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Theme" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Best</SelectItem>
+                  <SelectItem value="0">Close</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <FFButton
+              className="w-full mt-4"
+              onClick={() => onMerge && onMerge(tierUsed.toString())}
+              disabled={amount < 3}
+            >
+              {amount < 3 ? "Not enough" : "Merge Now"}
             </FFButton>
           </>
         );
@@ -154,7 +222,10 @@ export default function MergeSheet({
             </div>
             <FFButton
               className="w-full mt-20"
-              onClick={() => setIsOpenForce(false)}
+              onClick={() => {
+                setIsOpenForce(false);
+                router.reload();
+              }}
             >
               Got it
             </FFButton>
@@ -164,7 +235,7 @@ export default function MergeSheet({
       default:
         return;
     }
-  }, [state, data.name, data.subName, tierUsed, onMerge, TierText, width, height, Tier, setIsOpenForce]);
+  }, [state, data.name, data.subName, tierUsed, TierAmount, amount, TierText, width, height, Tier, onMerge, setIsOpenForce, router]);
   return (
     <Sheet open={isOpenForce}>
       <SheetContent className="font-serif rounded-t-2xl h-[80%]" side="bottom">

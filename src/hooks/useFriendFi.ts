@@ -136,6 +136,28 @@ export const useFriendFi = () => {
     [mintFee, address, chainId, etherProvider, sendTransaction]
   );
 
+  const merge = useCallback(
+    async (id: string, level: string) => {
+      const address = friendKeyManagerContract.getAddress(chainId);
+      const contract = friendKeyManagerContract.getContract(chainId);
+      const data = contract.interface.encodeFunctionData("merge", [
+        BigInt(id),
+        BigInt(level),
+      ]);
+      const contractView = friendKeyManagerContract.getContract(
+        chainId,
+        etherProvider
+      );
+      const fee = await contractView.MERGE_FEES(level);
+      return sendTransaction({
+        to: address,
+        data,
+        value: fee.toString(),
+      });
+    },
+    [chainId, etherProvider, sendTransaction]
+  );
+
   const fetchFriendKeys = useCallback(async () => {
     if (address && chainId) {
       const resp = await covalent.NftService.getNftsForAddress(
@@ -143,9 +165,15 @@ export const useFriendFi = () => {
         address,
         { withUncached: true }
       );
-      const contractAddress0 = friendKeyContract.getAddress(chainId, 0);
-      const contractAddress1 = friendKeyContract.getAddress(chainId, 1);
-      const contractAddress2 = friendKeyContract.getAddress(chainId, 2);
+      const contractAddress0 = friendKeyContract
+        .getAddress(chainId, 0)
+        .toLowerCase();
+      const contractAddress1 = friendKeyContract
+        .getAddress(chainId, 1)
+        .toLowerCase();
+      const contractAddress2 = friendKeyContract
+        .getAddress(chainId, 2)
+        .toLowerCase();
       const filterResp = resp.data.items.filter(
         (item) =>
           item.contract_address.toLowerCase() ===
@@ -154,9 +182,26 @@ export const useFriendFi = () => {
             contractAddress1.toLowerCase() ||
           item.contract_address.toLowerCase() === contractAddress2.toLowerCase()
       );
+      // group by contractAddress
+      const newFilterResp: { contract_address: string; nft_data: any[] }[] = [];
+      filterResp.forEach((item, index) => {
+        if (newFilterResp.length === 0) newFilterResp.push(item);
+        else {
+          let isExist = false;
+          newFilterResp.forEach((item2) => {
+            if (item.contract_address === item2.contract_address) {
+              isExist = true;
+              newFilterResp[newFilterResp.length - 1].nft_data = newFilterResp[
+                newFilterResp.length - 1
+              ].nft_data.concat(item2.nft_data);
+            }
+          });
+          if (!isExist) newFilterResp.push(item);
+        }
+      });
       const resID = await Promise.all(
-        filterResp.map(async (item) => {
-          let level: any;
+        newFilterResp.map(async (item) => {
+          let level;
           switch (item.contract_address) {
             case contractAddress0:
               level = 0;
@@ -170,6 +215,7 @@ export const useFriendFi = () => {
             default:
               level = 0;
           }
+          console.log(item.contract_address);
           const friendKey = friendKeyContract.getContract(
             chainId,
             level,
@@ -203,17 +249,21 @@ export const useFriendFi = () => {
       let data = {} as any;
       resID.forEach((item) => {
         item.forEach((i) => {
-          const { balance, contractAddress, level, ...res } = i!;
-          if (!data[res.uuid]) {
-            data[res.uuid] = {
-              ...res,
-              tier: [{ balance, contractAddress, level }],
-            };
-          } else {
-            data[res.uuid].tier.push({ balance, contractAddress, level });
+          if (i) {
+            const { balance, contractAddress, level, ...res } = i!;
+            if (!data[res.uuid]) {
+              data[res.uuid] = {
+                ...res,
+                tier: [{ balance, contractAddress, level }],
+              };
+            } else {
+              if (data[res.uuid].tier.find((item: any) => item.level !== level))
+                data[res.uuid].tier.push({ balance, contractAddress, level });
+            }
           }
         });
       });
+      console.log(data);
       const res = await backend.getUser(Object.keys(data).join(","));
       const formattedData = Object.keys(data).map((key) => {
         const userInfo = res?.data.data.find((item: any) => item.uuid === key);
@@ -326,6 +376,26 @@ export const useFriendFi = () => {
     [chainId, etherProvider]
   );
 
+  const fetchIdByAddress = useCallback(
+    async (address: string) => {
+      const id = await userManagerContract
+        .getContract(chainId, etherProvider)
+        .addressId(address);
+      return id;
+    },
+    [chainId, etherProvider]
+  );
+
+  const fetchAddressByUUID = useCallback(
+    async (uuid: string) => {
+      const address = await userManagerContract
+        .getContract(chainId, etherProvider)
+        .uuidAddresses(uuid);
+      return address;
+    },
+    [chainId, etherProvider]
+  );
+
   return {
     fetching,
     registered,
@@ -338,8 +408,11 @@ export const useFriendFi = () => {
     fetchFriendKeys,
     register,
     batchMint,
+    merge,
     waitForMintResult,
     fetchMintResult,
     fetchUUIDbyTokenId,
+    fetchAddressByUUID,
+    fetchIdByAddress,
   };
 };

@@ -56,6 +56,7 @@ export default function Friend() {
       </div>
     );
 
+
   return (
     <ProfileScreen
       name={name || ''}

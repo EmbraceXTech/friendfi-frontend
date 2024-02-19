@@ -44,7 +44,7 @@ export default function FriendFoundCard({
         <div className="text-tertiary text-xs">{subName}</div>
       </div>
       {Tier}
-      <div className="text-lg">{amount > 0 && amount}</div>
+      {/* <div className="text-lg">{amount > 0 && amount}</div> */}
     </div>
   );
 }

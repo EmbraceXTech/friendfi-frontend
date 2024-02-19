@@ -88,12 +88,12 @@ export default function RandomSuccessSheet({
               <Carousel>
                 <CarouselContent>
                   {foundFriends.map((friend, index) => (
-                    <CarouselItem key={index} className="basis-1/3">
-                      <FriendFoundCard {...friend} className="w-fit" />
+                    <CarouselItem key={index} className="basis-[100%]">
+                      <FriendFoundCard {...friend} className="w-full" />
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                {foundFriends.length > 3 && (
+                {foundFriends.length > 0 && (
                   <>
                     <CarouselPrevious />
                     <CarouselNext />

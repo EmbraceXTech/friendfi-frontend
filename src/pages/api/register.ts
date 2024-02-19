@@ -44,10 +44,15 @@ export default async function handler(
   if (req.method === "POST") {
     // Process a POST request
     try {
+      console.log('test1');
       const { db } = await mongo();
+      console.log('test2');
+
       const userCollection = db.collection("users");
+      console.log('test3');
       const particleUser = await validateParticleAuth(uuid, token);
       // const particleUser = userInfo;
+      console.log('test4');
 
       if (particleUser) {
         const userData = { uuid: uuid, ...particleUser.result };

@@ -31,6 +31,7 @@ export default function Friends() {
         close: +(friendKey.tier.find((t) => t.level === "1")?.balance || 0),
         best: +(friendKey.tier.find((t) => t.level === "2")?.balance || 0),
       },
+      uuid: friendKey.uuid
     }));
   }, [friendKeys]);
 
