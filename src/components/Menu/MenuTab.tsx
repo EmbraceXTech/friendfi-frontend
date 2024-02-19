@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PostItem from "../Post/PostItem";
 import { backend } from "@/services/backend";
 import { useFriendFi } from "@/hooks/useFriendFi";
+import { useAuthCore } from "@particle-network/auth-core-modal";
 
 export default function MenuTab({
   uuid,
@@ -16,11 +17,12 @@ export default function MenuTab({
 }) {
   const [currentTab, setCurrentTab] = useState<"post" | "statistics">("post");
   const [posts, setPosts] = useState([]);
+  const { userInfo } = useAuthCore();
   useEffect(() => {
     try {
       (async () => {
         try {
-          const whitelist = Array.from({ length: highestTier + 1 }).map((_, i) => {
+          const whitelist = Array.from({ length: userInfo?.uuid === uuid ? 3 : highestTier + 1 }).map((_, i) => {
             return { uuid, tier: i.toString() };
           });
           const postsResponse = await backend.getPostWhiteList(whitelist);
