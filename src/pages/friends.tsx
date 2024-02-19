@@ -6,8 +6,7 @@ import { FFButton } from "@/components/ui/FFButton";
 import { IconName } from "@/components/ui/iconName";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBalance } from "@/hooks/useBalance";
-import { useFriendFi } from "@/hooks/useFriendFi";
-import { useEthereum } from "@particle-network/auth-core-modal";
+import { MintedKey, useFriendFi } from "@/hooks/useFriendFi";
 import { useEffect, useMemo, useState } from "react";
 
 export default function Friends() {
@@ -18,6 +17,7 @@ export default function Friends() {
   );
   const [loadingSheetVisible, setLoadingSheetVisible] = useState(false);
   const [successSheetVisible, setSuccessSheetVisible] = useState(false);
+  const [mintResult, setMintResult] = useState<MintedKey[]>([]);
 
   const { mintFee, friendKeys, batchMint, fetchFriendKeys, waitForMintResult } =
     useFriendFi();
@@ -50,7 +50,8 @@ export default function Friends() {
       console.log("Hash: ", txHash);
       setLoadingSheetVisible(true);
       const result = await waitForMintResult(txHash);
-      console.log(result);
+      console.log('Mint:', result);
+      setMintResult(result);
       setLoadingSheetVisible(false);
       setSuccessSheetVisible(true);
     } catch (e) {
@@ -132,7 +133,11 @@ export default function Friends() {
               {openText}
             </FFButton>
           </RandomLoadingSheet>
-          <RandomSuccessSheet isOpenForce={successSheetVisible} />
+          <RandomSuccessSheet
+            isOpenForce={successSheetVisible}
+            setIsOpenForce={setSuccessSheetVisible}
+            found={mintResult}
+          />
         </TabsContent>
         <TabsContent
           value="listFriends"

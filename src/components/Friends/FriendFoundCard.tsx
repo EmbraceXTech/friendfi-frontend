@@ -34,7 +34,7 @@ export default function FriendFoundCard({
   return (
     <div
       className={cn(
-        "flex flex-col items-center border rounded-3xl py-10 px-6 font-sans space-y-3 relative",
+        "flex flex-col items-center border rounded-3xl py-10 px-6 font-sans space-y-3",
         className
       )}
     >

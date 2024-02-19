@@ -1,6 +1,13 @@
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
-import { useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import {
   Sheet,
@@ -20,45 +27,59 @@ import {
 } from "../ui/carousel";
 import FriendFoundCard from "./FriendFoundCard";
 import { useRouter } from "next/router";
+import { useFriendFi } from "@/hooks/useFriendFi";
+import { backend } from "@/services/backend";
 
 export default function RandomSuccessSheet({
   isOpenForce = false,
+  setIsOpenForce,
+  found = [],
 }: {
   isOpenForce?: boolean;
+  setIsOpenForce: Dispatch<SetStateAction<boolean>>;
+  found?: { id: number; value: number }[];
 }) {
-  const [isOpen, setIsOpen] = useState(isOpenForce);
   const { width, height } = useWindowSize();
   const router = useRouter();
+  const [foundFriends, setFoundFriends] = useState<any[]>([]);
 
-  // Mock
-  const foundFriends = [
-    {
-      name: "Vitalik Buterin",
-      subName: "vitalik.eth",
-      amount: 1,
-    },
-    {
-      name: "Lisa Blackpink",
-      subName: "lalalisa",
-      amount: 5,
-    },
-    {
-      name: "Lisa Blackpink1",
-      subName: "lalalisa",
-      amount: 3,
-    },
-    {
-      name: "Lisa Blackpink2",
-      subName: "lalalisa",
-      amount: 15,
-    },
-  ];
+  const { fetchUUIDbyTokenId } = useFriendFi();
+
+  const foundFriend = useCallback(async () => {
+    if (found && found.length > 0) {
+      const _uuid: string[] = [];
+      const uuids = await Promise.all(
+        found.map(async (f) => {
+          const uuid = await fetchUUIDbyTokenId(f.id.toString());
+          _uuid.push(uuid);
+          return {
+            amount: f.value,
+            uuid: uuid,
+          };
+        })
+      );
+      if (_uuid.length > 0) {
+        const res = await backend.getUser(_uuid.join(","));
+        console.log(res);
+        return uuids.map((item) => {
+          return {
+            ...item,
+            name:
+              res?.data.data.find((i: any) => i.uuid === item.uuid)?.name || "",
+          };
+        });
+      }
+    }
+  }, [found]);
 
   useEffect(() => {
-    setIsOpen(isOpenForce);
-  }, [isOpenForce]);
+    (async () => {
+      const _found = await foundFriend();
+      if (_found) setFoundFriends(_found);
+    })();
+  }, [foundFriend]);
   return (
-    <Sheet open={isOpen}>
+    <Sheet open={isOpenForce}>
       <SheetContent className="font-serif h-full" side="bottom">
         <SheetHeader className="h-full max-w-[500px] mx-auto py-6">
           <SheetDescription className="min-h-52 font-sans flex flex-col justify-between items-center text-center text-black h-full">
@@ -68,7 +89,7 @@ export default function RandomSuccessSheet({
                 <CarouselContent>
                   {foundFriends.map((friend, index) => (
                     <CarouselItem key={index} className="basis-1/3">
-                      <FriendFoundCard {...friend} />
+                      <FriendFoundCard {...friend} className="w-fit" />
                     </CarouselItem>
                   ))}
                 </CarouselContent>
@@ -91,7 +112,7 @@ export default function RandomSuccessSheet({
               <FFButton
                 className="font-serif w-full"
                 onClick={() => {
-                  setIsOpen(false);
+                  setIsOpenForce(false);
                   router.reload();
                 }}
               >

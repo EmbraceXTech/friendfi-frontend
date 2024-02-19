@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 
 import { formatDateString } from "@/utils/date.util";
 
@@ -9,6 +9,9 @@ import MoreSheet from "@/components/Menu/MoreSheet";
 import { IconName } from "../iconName";
 import Merge from "@/components/Icon/Merge";
 import MergeSheet from "@/components/Menu/MergeSheet";
+import { useEthereum } from "@particle-network/auth-core-modal";
+import toast from "react-hot-toast";
+import { useFriendFi } from "@/hooks/useFriendFi";
 
 export default function ProfileScreen({
   name,
@@ -25,14 +28,35 @@ export default function ProfileScreen({
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   mode: "me" | "friend";
 }) {
+  const { address } = useEthereum();
   const [mergeStateSheet, setMergeStateSheet] = React.useState<
     "merge" | "complete"
   >("merge");
+  const { fetchFriendKeys, friendKeyWhiteList } = useFriendFi();
   const handleMerge = () => {
     setMergeStateSheet("complete");
     console.log("merge");
   };
+
+  useEffect(() => {
+    (async () => await fetchFriendKeys())();
+  }, [fetchFriendKeys]);
+
+  console.log("friendKeyWhiteList", friendKeyWhiteList);
+
+  const keyAmount = useMemo(() => {
+    const keys = [0, 0, 0];
+    if (!friendKeyWhiteList || friendKeyWhiteList.length === 0) return keys;
+    friendKeyWhiteList.forEach((item) => {
+      if (+item.tier === 0) keys[0]++;
+      if (+item.tier === 1) keys[1]++;
+      if (+item.tier === 2) keys[2]++;
+    });
+    return keys;
+  }, [friendKeyWhiteList]);
+
   if (name === "") return <></>;
+
   return (
     <div className="text-sm font-sans flex flex-col w-full">
       <div className="w-full h-32 bg-[#2B2A4D] relative">
@@ -72,13 +96,26 @@ export default function ProfileScreen({
         <h2 className="text-lg font-medium">{name}</h2>
         {socialMediaLink}
       </div>
+      {mode === "me" ? (
+        <span
+          className=" cursor-pointer"
+          onClick={() => {
+            toast.success("Copy address to clipboard!!");
+            navigator.clipboard.writeText(address || "");
+          }}
+        >
+          {address}
+        </span>
+      ) : (
+        <div />
+      )}
       <div className="text-secondary mt-3">
         Joined {userInfo && formatDateString(userInfo?.created_at || "")}
       </div>
       <span className="mt-1 text-secondary">
-        <span className="text-black">3</span> Common{" "}
-        <span className="text-black">0</span> Close{" "}
-        <span className="text-black">0</span> Best
+        <span className="text-black">{keyAmount[0]}</span> Common{" "}
+        <span className="text-black">{keyAmount[1]}</span> Close{" "}
+        <span className="text-black">{keyAmount[2]}</span> Best
       </span>
       <MenuTab name={userInfo?.name || ""} uuid={userInfo?.uuid || ""} />
       {mode === "me" && isOpen && setIsOpen && (

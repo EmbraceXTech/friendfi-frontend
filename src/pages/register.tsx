@@ -7,6 +7,7 @@ import { useConnect, useEthereum } from "@particle-network/auth-core-modal";
 import { useAuthCore } from "@particle-network/auth-core-modal";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { PuffLoader } from "react-spinners";
 
 const INTERVAL = 15 * 1000;
@@ -94,6 +95,18 @@ export default function Reigster() {
           </div>
           <div className="text-sm">
             Check your wallet on the buttom right corner.
+          </div>
+          <div>
+            Your Address:{" "}
+            <span
+              className="text-red-500 cursor-pointer"
+              onClick={() => {
+                toast.success("Copy address to clipboard!!");
+                navigator.clipboard.writeText(address || "");
+              }}
+            >
+              {address}
+            </span>
           </div>
         </div>
         <div className="flex flex-col space-y-3 w-full">

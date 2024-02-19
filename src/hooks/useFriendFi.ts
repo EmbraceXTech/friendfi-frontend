@@ -26,7 +26,7 @@ type FriendKey = {
   }[];
 };
 
-type MintedKey = {
+export type MintedKey = {
   id: number;
   value: number;
 };
@@ -47,11 +47,13 @@ export const useFriendFi = () => {
   const chainId = chainInfo.id;
 
   const friendKeyWhiteList = useMemo(() => {
-    return friendKeys.map((item) => {
-      return item.tier.map((item2) => {
-        return { uuid: item.uuid, tier: item2.level };
-      });
-    }).flat();
+    return friendKeys
+      .map((item) => {
+        return item.tier.map((item2) => {
+          return { uuid: item.uuid, tier: item2.level };
+        });
+      })
+      .flat();
   }, [friendKeys]);
 
   const etherProvider = useMemo(
@@ -314,6 +316,13 @@ export const useFriendFi = () => {
     [fetchMintResult]
   );
 
+  const fetchUUIDbyTokenId = useCallback(async (id: string) => {
+    const uuid = await userManagerContract
+      .getContract(chainId, etherProvider)
+      .uuids(id);
+    return uuid;
+  }, [chainId, etherProvider]);
+
   return {
     fetching,
     registered,
@@ -328,5 +337,6 @@ export const useFriendFi = () => {
     batchMint,
     waitForMintResult,
     fetchMintResult,
+    fetchUUIDbyTokenId,
   };
 };
